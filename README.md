@@ -1,7 +1,8 @@
-<<<<<<< HEAD
 # cs330-2026-group01
-
-Cameron Salgado is pawesome2
-=======
-# cs330-2026-group01
->>>>>>> parent of 0668a0a (docs: add name to README)
+Tommy Hartmann - CS330 Team Member
+Wyatt Nuzum
+This is Alaina \!
+Jennalyn Jardeleza
+Luke Williams
+Jackson Walraven
+Cameron Salgado
