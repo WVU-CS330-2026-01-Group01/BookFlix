@@ -1,13 +1,12 @@
-import React from 'react';
+import React from "react";
+import ProfileSidebar from "./components/ProfileSidebar";
 
 function App() {
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>CS330 Project Baseline</h1>
-      <p>Your Vite + React app is running correctly!</p>
+    <div style={{ padding: "40px" }}>
+      <ProfileSidebar />
     </div>
   );
 }
 
 export default App;
-
