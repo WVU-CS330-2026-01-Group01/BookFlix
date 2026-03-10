@@ -75,6 +75,9 @@ body {
 
 .page {
   width: 100%;
+  min-height: 100vh;
+  background: #333;
+  color: white;
 }
 
 .main {
@@ -141,6 +144,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #777;
+  color: white;
   font-size: 20px;
+}
+
+.logHeader {
+  color: white;
+  font-size: 24px;
 }
