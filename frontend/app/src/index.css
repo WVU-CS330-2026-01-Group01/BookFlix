@@ -73,10 +73,17 @@ body {
   font-family: Arial, sans-serif;
 }
 
+h1 {
+  font-size: 20px;
+  line-height: 1.1;
+  color: white;
+  padding: 8px 15px;
+}
+
 .page {
   width: 100%;
   min-height: 100vh;
-  background: #333;
+  background: 333;
   color: white;
 }
 
@@ -91,17 +98,23 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 25px;
-  background-color: #222;
+  padding: 8px 15px;
+  background-color: #121212;
   color: white;
   width: 100%;
   box-sizing: border-box;
 }
 
 .navbar .logo {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
+  background: #121212;
+  color: white;
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
+
 
 .navbar .login-btn {
   background: #4CAF50;
@@ -151,4 +164,22 @@ body {
 .logHeader {
   color: white;
   font-size: 24px;
+  text-align: center;
+  padding: 50px;
 }
+
+.logBox {
+  margin: 1px auto;
+  width: 100%;
+  max-width: 500px;
+  height: 600px;
+  background: darkblue;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+}
+

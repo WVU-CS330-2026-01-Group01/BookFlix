@@ -16,11 +16,11 @@ function Home() {
 
       {/* Navbar */}
       <div className="navbar">
-        <div className="logo">
+        <button className="logo">
           BookFlix
           <img src={cam} alt="cameron"
           style={{ width: '50px', height: '50px', marginLeft: '10px' }}></img>
-        </div>
+        </button>
         <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
       </div>
 
