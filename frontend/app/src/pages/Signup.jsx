@@ -2,7 +2,7 @@ import React from "react";
 import cam from '../assets/cam.png';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function Signup() {
   const navigate = useNavigate();
   return (
     <div className="logPage">
@@ -13,14 +13,14 @@ function Login() {
         </button>
       </div>
 
-      <h1>Login Page</h1>
+      <h1>Signup Page</h1>
       <div className="logBox">
-        <div className="logBars">
+        <div className="signBars">
           <input type="text" placeholder="Username" />
+          <input type="text" placeholder="Email" />
           <input type="text" placeholder="Password" />
-          
-          <button className="login-btn" onClick={() => navigate("/")}>Log In</button>
-          <button type = "button" className="signup-text" onClick={() => navigate("/signup")}>Don't have an account? Sign up here</button>
+          <input type="text" placeholder="Confirm Password" />
+          <button className="signup-btn" onClick={() => navigate("/")}>Create Account</button>
         </div>
 
       </div>
@@ -28,4 +28,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;
