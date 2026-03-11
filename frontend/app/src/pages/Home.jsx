@@ -37,7 +37,14 @@ function Home() {
           content
         </div>
 
+        {/*make new movie book pair button*/}
+        <button className ="add-pair-button" onClick={() => navigate("/pair")}>
+          Add Movie-Book Pair
+        </button>
+
       </div>
+      
+      
     </div>
 
   );
