@@ -20,11 +20,9 @@ function ProfileSidebar() {
         <span>Bookmarks</span>
       </div>
 
-
     </div>
   );
   }
-
 
 const styles = {
   container: {
@@ -37,7 +35,6 @@ const styles = {
     backgroundColor: "#2a2a2a"
   },
 
-
   avatar: {
     width: "80px",
     height: "80px",
@@ -45,11 +42,9 @@ const styles = {
     marginBottom: "10px"
   },
 
-
   title: {
     margin: "10px 0"
   },
-
 
   bookmarks: {
      marginTop: "15px",
@@ -58,7 +53,6 @@ const styles = {
     gap: "8px",
     fontSize: "16px"
   },
-
 
   icon: {
     fontSize: "18px"
