@@ -32,9 +32,44 @@ function Home() {
           <input type="text" placeholder="Search..." />
         </div>
 
-        {/* Content Area */}
+      {/* Content Rows */}
         <div className="content-area">
-          content
+          <div className="row">
+          <h2>Trending</h2>
+            <div className="card-row">
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+            </div>
+          </div>
+
+
+          <div className="row">
+            <h2>Recommendations</h2>
+            <div className="card-row">
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+            </div>
+          </div>
+
+
+          <div className="row">
+            <h2>Discover</h2>
+            <div className="card-row">
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+              <div className="card">book/movie</div>
+            </div>
+          </div>
+
+
         </div>
 
         {/*make new movie book pair button*/}
