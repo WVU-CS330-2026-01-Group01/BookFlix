@@ -97,6 +97,7 @@ function validateVolumeOptions(optionsForRequest = {}) {
 function createGoogleBooksClient(options = {}) {
   const apiBaseUrl = options.apiBaseUrl ?? GOOGLE_BOOKS_API_BASE_URL;
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
+  const apiKey = options.apiKey ?? null;
 
   if (typeof fetchImpl !== "function") {
     throw new Error(
@@ -109,7 +110,10 @@ function createGoogleBooksClient(options = {}) {
   async function request(endpoint, params = {}) {
     const baseUrl = `${apiBaseUrl.replace(/\/+$/, "")}/`;
     const url = new URL(endpoint.replace(/^\/+/, ""), baseUrl);
-    const queryString = toQueryString(params);
+    const queryString = toQueryString({
+      ...params,
+      ...(apiKey ? { key: apiKey } : {}),
+    });
 
     if (queryString) {
       url.search = queryString;

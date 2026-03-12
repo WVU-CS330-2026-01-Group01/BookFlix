@@ -4,8 +4,11 @@ const express = require("express");
 const env = require("./config/env");
 const { createGoogleBooksRouter } = require("./routes/googleBooksRoutes");
 const { createTmdbRouter } = require("./routes/tmdbRoutes");
+const { createPairsRouter } = require("./routes/pairsRoutes");
+
 
 const app = express();
+
 
 app.use(
   cors({
@@ -23,5 +26,6 @@ app.get("/health", (request, response) => {
 
 app.use("/api/google-books", createGoogleBooksRouter());
 app.use("/api/tmdb", createTmdbRouter());
+app.use("/api/pairs", createPairsRouter());
 
 module.exports = app;

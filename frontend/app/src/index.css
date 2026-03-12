@@ -248,7 +248,7 @@ h1 {
   margin: 0 auto;
   font-weight: bold;
 }
-.main .add-pair-button {
+.add-pair-button {
   display: block;
   margin:  0px auto;
   background: #4CAF50;
@@ -287,6 +287,7 @@ h1 {
   color: white;
   font-size: 20px;
   flex-wrap: nowrap;
+  overflow:visible;
 }
 
 .pair-input {

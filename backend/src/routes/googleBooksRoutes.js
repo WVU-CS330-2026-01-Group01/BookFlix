@@ -27,8 +27,9 @@ function sendRouteError(response, error) {
 
 function createGoogleBooksRouter(options = {}) {
   const router = express.Router();
-  const googleBooks = options.googleBooks ?? createGoogleBooksClient();
-
+  const googleBooks = options.googleBooks ?? createGoogleBooksClient({
+    apiKey: process.env.GOOGLE_BOOKS_API_KEY,
+  });
   router.get("/", (request, response) => {
     response.json({
       ok: true,
