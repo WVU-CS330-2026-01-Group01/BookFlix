@@ -65,9 +65,15 @@ http://localhost:3000
 In `backend/.env`:
 
 ```env
+GOOGLE_BOOKS_API_KEY=your_google_books_api_key
 PORT=3000
 FRONTEND_ORIGIN=http://localhost:5173
 ```
+
+`GOOGLE_BOOKS_API_KEY` should be treated as required for normal application use.
+The backend can technically call the public Google Books endpoints without a key, but in practice
+anonymous requests hit low rate limits quickly and can return HTTP `429 Too Many Requests`
+during ordinary book searching in the add-pair UI.
 
 ## How The Pieces Fit Together
 
@@ -147,4 +153,6 @@ For `/api/google-books/details`, use:
 - Google Books API logic belongs in `src/services`.
 - App setup belongs in `src/app.js`.
 - Server startup belongs in `src/server.js`.
-- No OAuth flow or API key is needed for the current backend integration.
+- No OAuth flow is needed for the current backend integration.
+- A Google Books API key should be configured in `backend/.env` for normal usage.
+- If the key is missing, book search may still work briefly, but Google can rate-limit the app with HTTP `429` responses.
