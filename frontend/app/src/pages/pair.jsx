@@ -92,9 +92,15 @@ function Pair() {
           BookFlix
           <img src={cam} alt="cameron" style={{ width: '50px', height: '50px', marginLeft: '10px' }} />
         </button>
+        <div className="right-buttons">
+          <button className="temp-user-btn" onClick={() => navigate("/user")}>TEMPORARY Profile</button>
+          <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
+        </div>
       </div>
 
-      <h1>add-pair</h1>
+      <div>
+        <h1 style={{textAlign: 'center'}}>Create a Movie-Book Pair</h1>
+      </div>
       <div className="pairContainer">
 
         {/* Movie search box */}

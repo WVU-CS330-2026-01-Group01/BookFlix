@@ -1,9 +1,23 @@
 import React from 'react';
 import cam from '../assets/cam.png';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+
+
 
 function Home() {
   const navigate = useNavigate();
+
+  const [pairs, setPairs] = useState([]);
+
+  useEffect(() => {
+    fetch(`${baseUrl}/api/pairs/all`)
+      .then(r => r.json())
+      .then(data => setPairs(data))
+      .catch(err => console.error('Error fetching pairs:', err));
+  }, []);
+
   return (
     // <div style={{ textAlign: 'center', marginTop: '50px' }}>
     //   <h1>CS330 Project Baseline</h1>
@@ -16,7 +30,7 @@ function Home() {
 
       {/* Navbar */}
       <div className="navbar">
-        <button className="logo">
+        <button className="logo" onClick={() => navigate("/")}>
           BookFlix
           <img src={cam} alt="cameron"
           style={{ width: '50px', height: '50px', marginLeft: '10px' }}></img>
@@ -40,16 +54,28 @@ function Home() {
           <div className="row">
           <h2>Trending</h2>
             <div className="card-row">
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
+              {Object.entries(pairs).map(([key, pair]) => (
+                <button className="card" onClick={() => navigate("/BookMovie", { state:{pair}})}key={key}>
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${pair.movie.poster_path}`}
+                    alt={pair.movie.title}
+                    style={{ height: '200px', borderRadius: '6px 0px 0px 6px'}}
+                  />
+                  <div className="card-info">
+                    <p style={{ color: 'white', fontSize: '13px', margin: '2px 0', opacity: '1'}}>{pair.movie.title}</p>
+                  </div>
+                  <img
+                    src={pair.book.thumbnail}
+                    alt={pair.book.title}
+                    style={{ height: '200px', borderRadius: "0px 6px 6px 0px" }}
+                  />
+                </button>
+              ))}
             </div>
           </div>
 
 
-          <div className="row">
+          {/* <div className="row">
             <h2>Recommendations</h2>
             <div className="card-row">
               <div className="card">book/movie</div>
@@ -70,7 +96,7 @@ function Home() {
               <div className="card">book/movie</div>
               <div className="card">book/movie</div>
             </div>
-          </div>
+          </div> */}
 
 
         </div>

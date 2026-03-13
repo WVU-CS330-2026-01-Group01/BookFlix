@@ -1,1 +1,491 @@
-{}
+{
+  "70160_fTweuAAACAAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 70160,
+      "title": "The Hunger Games",
+      "poster_path": "/yXCbOiVDCxO71zI7cuwBRXdftq8.jpg",
+      "release_date": "2012-03-12",
+      "overview": "In a dystopian society where the Capitol forces each district to send two young tributes to fight to the death in a televised spectacle, a girl volunteers to take her sister’s place, setting the stage for a struggle of survival and defiance.",
+      "popularity": 7.4828,
+      "genre": [
+        "Sci-Fi",
+        "Adventure",
+        "Action",
+        "Thriller"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "fTweuAAACAAJ",
+      "title": "The Hunger Games",
+      "thumbnail": "http://books.google.com/books/content?id=fTweuAAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+      "publishedDate": "2012-03",
+      "description": "In a future North America, where the rulers of Panem maintain control through an annual televised survival competition pitting young people from each of the twelve districts against one another, sixteen-year-old Katniss's skills are put to the test when she voluntarily takes her younger sister's place.",
+      "ratings": 5,
+      "categories": [
+        "Juvenile Fiction"
+      ],
+      "pagecount": 483
+    }
+  },
+  "301507_Xb-2EAAAQBAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 301507,
+      "title": "Heated Rivalry",
+      "poster_path": "/3YCKbtAkYWCMDLHvkUjGhG7eWoS.jpg",
+      "release_date": "2025-11-28",
+      "overview": "Two of the biggest stars in Major League Hockey are bound by ambition, rivalry, and a magnetic pull neither of them fully understands. What begins as a secret fling between two fresh faced rookies evolves into a years-long journey of love, denial, and self-discovery. Over the next eight years, as they chase glory on the ice, they struggle to navigate their feelings for each other. Torn between the sport they live for and the love they can’t ignore, they must decide if there’s room in their fiercely competitive world for something as fragile – and powerful – as real love.",
+      "popularity": 43.7967,
+      "genre": [
+        "Drama"
+      ],
+      "type": "tv"
+    },
+    "book": {
+      "id": "Xb-2EAAAQBAJ",
+      "title": "Heated Rivalry",
+      "thumbnail": "http://books.google.com/books/content?id=Xb-2EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2023-04-18",
+      "description": "Based on Rachel Reid’s bestselling Game Changers book series, Heated Rivalry is now streaming on Crave in Canada and on HBO Max in the U.S. Discover all 6 books in the series! The epic enemies-to-lovers hockey romance from USA TODAY bestselling author Rachel Reid. Nothing interferes with pro hockey star Shane Hollander’s game. Now that he’s captain of the Montreal Voyageurs, he won’t let anything jeopardize that—definitely not the sexy rival he loves to hate. Boston Bears captain Ilya Rozanov is everything Shane’s not. The self-proclaimed king of the ice, he’s as cocky as he is talented. No one can beat him—except Shane. Publicly, they’re enemies. Privately, they can’t stop touching each other. The smart thing to do? Walk away, once a few secret hookups turn into a struggle to keep their relationship out of the press. The truth could ruin them both. But for Shane and Ilya, secrecy is soon no longer an option… Game Changers Book 1: Game Changer Book 2: Heated Rivalry Book 3: Tough Guy Book 4: Common Goal Book 5: Role Model Book 6: The Long Game Need more Reid?! Check out these other standalones from your favorite MM hockey romance writer: Time to Shine The Shots You Take",
+      "categories": [
+        "Fiction"
+      ],
+      "pagecount": 376
+    }
+  },
+  "671_kTH6zAEACAAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 671,
+      "title": "Harry Potter and the Philosopher's Stone",
+      "poster_path": "/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg",
+      "release_date": "2001-11-16",
+      "overview": "Harry Potter has lived under the stairs at his aunt and uncle's house his whole life. But on his 11th birthday, he learns he's a powerful wizard—with a place waiting for him at the Hogwarts School of Witchcraft and Wizardry. As he learns to harness his newfound powers with the help of the school's kindly headmaster, Harry uncovers the truth about his parents' deaths—and about the villain who's to blame.",
+      "popularity": 21.5549,
+      "genre": [
+        "Adventure",
+        "Fantasy"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "kTH6zAEACAAJ",
+      "title": "Harry Potter and the Philosopher's Stone",
+      "thumbnail": "http://books.google.com/books/content?id=kTH6zAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+      "publishedDate": "1997",
+      "description": "Rescued from the outrageous neglect of his aunt and uncle, a young boy with a great destiny proves his worth while attending Hogwarts School of Witchcraft and Wizardry.",
+      "ratings": 5,
+      "categories": [
+        "Children's stories"
+      ],
+      "pagecount": 309
+    }
+  },
+  "120_7iS1CCpHrJgC": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 120,
+      "title": "The Lord of the Rings: The Fellowship of the Ring",
+      "poster_path": "/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg",
+      "release_date": "2001-12-18",
+      "overview": "Young hobbit Frodo Baggins, after inheriting a mysterious ring from his uncle Bilbo, must leave his home in order to keep it from falling into the hands of its evil creator. Along the way, a fellowship is formed to protect the ringbearer and make sure that the ring arrives at its final destination: Mt. Doom, the only place where it can be destroyed.",
+      "popularity": 28.6344,
+      "genre": [
+        "Adventure",
+        "Fantasy",
+        "Action"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "7iS1CCpHrJgC",
+      "title": "The Fellowship of the Ring",
+      "thumbnail": "http://books.google.com/books/content?id=7iS1CCpHrJgC&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+      "publishedDate": "1988",
+      "description": "The opening novel of The Lord of the Rings—the greatest fantasy epic of all time—which continues in The Two Towers and The Return of the King. Nominated as one of America’s best-loved novels by PBS’s The Great American Read The dark, fearsome Ringwraiths are searching for a Hobbit. Frodo Baggins knows that they are seeking him and the Ring he bears—the Ring of Power that will enable evil Sauron to destroy all that is good in Middle-earth. Now it is up to Frodo and his faithful servant, Sam, with a small band of companions, to carry the Ring to the one place it can be destroyed: Mount Doom, in the very center of Sauron’s realm.",
+      "categories": [
+        "Fiction"
+      ],
+      "pagecount": 532
+    }
+  },
+  "687163_79nAzQEACAAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 687163,
+      "title": "Project Hail Mary",
+      "poster_path": "/huVzcVrlK8aiLd240ienleODvWl.jpg",
+      "release_date": "2026-03-13",
+      "overview": "Science teacher Ryland Grace wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction… but an unexpected friendship means he may not have to do it alone.",
+      "popularity": 70.7127,
+      "genre": [
+        "Sci-Fi",
+        "Adventure",
+        "Mystery"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "79nAzQEACAAJ",
+      "title": "Project Hail Mary",
+      "thumbnail": "http://books.google.com/books/content?id=79nAzQEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+      "publishedDate": "2021-05-04",
+      "description": "A lone astronaut must save the earth from disaster in this incredible new science-based thriller from the Sunday Times bestselling author of The Martian. Ryland Grace is the sole survivor on a desperate, last-chance mission - and if he fails, humanity and the earth itself will perish. Except that right now, he doesn't know that. He can't even remember his own name, let alone the nature of his assignment or how to complete it. All he knows is that he's been asleep for a very, very long time. And he's just been awakened to find himself millions of miles from home, with nothing but two corpses for company. His crew mates dead, his memories fuzzily returning, he realises that an impossible task now confronts him. Alone on this tiny ship that's been cobbled together by every government and space agency on the planet and hurled into the depths of space, it's up to him to conquer an extinction-level threat to our species. And thanks to an unexpected ally, he just might have a chance. Part scientific mystery, part dazzling interstellar journey, Project Hail Mary is a tale of discovery, speculation, and survival to rival The Martian - while taking us to places it never dreamed of going.",
+      "pagecount": 448
+    }
+  },
+  "286217_oGGMDQAAQBAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 286217,
+      "title": "The Martian",
+      "poster_path": "/3ndAx3weG6KDkJIRMCi5vXX6Dyb.jpg",
+      "release_date": "2015-09-30",
+      "overview": "During a manned mission to Mars, Astronaut Mark Watney is presumed dead after a fierce storm and left behind by his crew. But Watney has survived and finds himself stranded and alone on the hostile planet. With only meager supplies, he must draw upon his ingenuity, wit and spirit to subsist and find a way to signal to Earth that he is alive.",
+      "popularity": 12.5941,
+      "genre": [
+        "Drama",
+        "Adventure",
+        "Sci-Fi"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "oGGMDQAAQBAJ",
+      "title": "The Martian",
+      "thumbnail": "http://books.google.com/books/content?id=oGGMDQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2014-02-11",
+      "description": "#1 NEW YORK TIMES BESTSELLER • “Brilliant . . . a celebration of human ingenuity [and] the purest example of real-science sci-fi for many years . . . utterly compelling.”—The Wall Street Journal The inspiration for the major motion picture Six days ago, astronaut Mark Watney became one of the first people to walk on Mars. Now, he’s sure he’ll be the first person to die there. After a dust storm nearly kills him and forces his crew to evacuate while thinking him dead, Mark finds himself stranded and completely alone with no way to even signal Earth that he’s alive—and even if he could get word out, his supplies would be gone long before a rescue could arrive. Chances are, though, he won’t have time to starve to death. The damaged machinery, unforgiving environment, or plain-old “human error” are much more likely to kill him first. But Mark isn’t ready to give up yet. Drawing on his ingenuity, his engineering skills—and a relentless, dogged refusal to quit—he steadfastly confronts one seemingly insurmountable obstacle after the next. Will his resourcefulness be enough to overcome the impossible odds against him? NAMED ONE OF PASTE’S BEST NOVELS OF THE DECADE “A hugely entertaining novel [that] reads like a rocket ship afire . . . Weir has fashioned in Mark Watney one of the most appealing, funny, and resourceful characters in recent fiction.”—Chicago Tribune “As gripping as they come . . . You’ll be rooting for Watney the whole way, groaning at every setback and laughing at his pitchblack humor. Utterly nail-biting and memorable.”—Financial Times",
+      "categories": [
+        "Fiction"
+      ],
+      "pagecount": 385
+    }
+  },
+  "2048_-YtmxAEACAAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 2048,
+      "title": "I, Robot",
+      "poster_path": "/efwv6F2lGaghjPpBRSINHtoEiZB.jpg",
+      "release_date": "2004-07-15",
+      "overview": "In 2035, where robots are commonplace and abide by the three laws of robotics, a technophobic cop investigates an apparent suicide. Suspecting that a robot may be responsible for the death, his investigation leads him to believe that humanity may be in danger.",
+      "popularity": 8.8894,
+      "genre": [
+        "Action",
+        "Sci-Fi"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "-YtmxAEACAAJ",
+      "title": "I, Robot.",
+      "thumbnail": "http://books.google.com/books/content?id=-YtmxAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+      "publishedDate": "1974",
+      "pagecount": 10
+    }
+  },
+  "9986_R5m50H3KVqEC": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 9986,
+      "title": "Charlotte's Web",
+      "poster_path": "/fU0IR5HF8KxQbZijuWKPTrY81Qv.jpg",
+      "release_date": "2006-12-07",
+      "overview": "Wilbur the pig is scared of the end of the season, because he knows that come that time, he will end up on the dinner table. He hatches a plan with Charlotte, a spider that lives in his pen, to ensure that this will never happen.",
+      "popularity": 3.5196,
+      "genre": [
+        "Comedy",
+        "Family",
+        "Fantasy"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "R5m50H3KVqEC",
+      "title": "Charlotte's Web",
+      "thumbnail": "http://books.google.com/books/content?id=R5m50H3KVqEC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "1952-10-15",
+      "description": "Sixty years ago, on October 15, 1952, E.B. White's Charlotte's Web was published. It's gone on to become one of the most beloved children's books of all time. To celebrate this milestone, the renowned Newbery Medalist Kate DiCamillo has written a heartfelt and poignant tribute to the book that is itself a beautiful translation of White's own view of the world—of the joy he took in the change of seasons, in farm life, in the miracles of life and death, and, in short, the glory of everything. We are proud to include Kate DiCamillo's foreword in the 60th anniversary editions of this cherished classic. Charlotte's Web is the story of a little girl named Fern who loved a little pig named Wilbur—and of Wilbur's dear friend Charlotte A. Cavatica, a beautiful large grey spider who lived with Wilbur in the barn. With the help of Templeton, the rat who never did anything for anybody unless there was something in it for him, and by a wonderfully clever plan of her own, Charlotte saved the life of Wilbur, who by this time had grown up to quite a pig. How all this comes about is Mr. White's story. It is a story of the magic of childhood on the farm. The thousands of children who loved Stuart Little, the heroic little city mouse, will be entranced with Charlotte the spider, Wilbur the pig, and Fern, the little girl who understood their language. The forty-seven black-and-white drawings by Garth Williams have all the wonderful detail and warmhearted appeal that children love in his work. Incomparably matched to E.B. White's marvelous story, they speak to each new generation, softly and irresistibly.",
+      "ratings": 5,
+      "categories": [
+        "Juvenile Fiction"
+      ],
+      "pagecount": 202
+    }
+  },
+  "9880_xMFMFmzw-QwC": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 9880,
+      "title": "The Princess Diaries",
+      "poster_path": "/qSw4lzhDGeM5MjQc86BLzJALhBs.jpg",
+      "release_date": "2001-08-03",
+      "overview": "A socially awkward but very bright 15-year-old girl being raised by a single mom discovers that she is the princess of a small European country because of the recent death of her long-absent father, who, unknown to her, was the crown prince of Genovia. She must make a choice between continuing the life of a San Francisco teen or stepping up to the throne.",
+      "popularity": 7.2611,
+      "genre": [
+        "Comedy",
+        "Family",
+        "Romance"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "xMFMFmzw-QwC",
+      "title": "The Princess Diaries",
+      "thumbnail": "http://books.google.com/books/content?id=xMFMFmzw-QwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2009-10-13",
+      "description": "The first book in the #1 New York Times bestselling Princess Diaries series by Meg Cabot. Mia Thermopolis is pretty sure there’s nothing worse than being a five-foot-nine, flat-chested freshman, who also happens to be flunking Algebra. Is she ever in for a surprise. First Mom announces that she’s dating Mia’s Algebra teacher. Then Dad has to go and reveal that he is the crown prince of Genovia. And guess who still doesn’t have a date for the Cultural Diversity Dance? The Princess Diaries is the first book in the beloved, bestselling series that inspired the feature film starring Anne Hathaway and Julie Andrews.",
+      "ratings": 5,
+      "categories": [
+        "Young Adult Fiction"
+      ],
+      "pagecount": 248
+    }
+  },
+  "1316092_3XBxMqWG72sC": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 1316092,
+      "title": "\"Wuthering Heights\"",
+      "poster_path": "/3YBce6dTh1D5oCMITXk2S5QhPt.jpg",
+      "release_date": "2026-02-11",
+      "overview": "Tragedy strikes when Heathcliff falls in love with Catherine Earnshaw, a woman from a wealthy family in 18th-century England.",
+      "popularity": 56.3852,
+      "genre": [
+        "Romance",
+        "Drama"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "3XBxMqWG72sC",
+      "title": "Wuthering Heights",
+      "thumbnail": "http://books.google.com/books/content?id=3XBxMqWG72sC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2003-03",
+      "description": "Emily Bronte's dark romance, with an introduction from best-selling author Alice Hoffman Heathcliff comes to the brooding mansion of Wuthering Heighths as an orphan child. Cathy is the daughter of the wealthy family that takes him in. They are drawn together from the moment they meet, their love consuming, destructive, and full of desire. They cannot be together, and yet they cannot stay apart. The consequences will haunt generations. This is the chilling story of two people who experience love and all its intense complications. It is a story readers will never forget.",
+      "ratings": 4,
+      "categories": [
+        "Juvenile Fiction"
+      ],
+      "pagecount": 418
+    }
+  },
+  "19614_fVWQDQAAQBAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 19614,
+      "title": "It",
+      "poster_path": "/4ybQ6gopB3H3cu0seVZLznDnIKo.jpg",
+      "release_date": "1990-11-18",
+      "overview": "In 1960, seven outcast kids known as \"The Losers' Club\" fight against an ancient shape-shifting alien who poses as a child-killing clown, while also dealing with bullies and abusive parents. Thirty years later, they reunite to stop the creature once and for all when it returns to their hometown.",
+      "popularity": 11.851,
+      "genre": [
+        "Mystery",
+        "Drama"
+      ],
+      "type": "tv"
+    },
+    "book": {
+      "id": "fVWQDQAAQBAJ",
+      "title": "It",
+      "thumbnail": "http://books.google.com/books/content?id=fVWQDQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2016-11-29",
+      "description": "It began--and ended--in 1958 when seven desperate children searched in the drains beneath Derry for an evil creature, but in 1985, Mike Hanlon, once one of those children, makes six phone calls and disinters an unremembered promise that sets off the ultimate terror.",
+      "ratings": 4.5,
+      "categories": [
+        "Fiction"
+      ],
+      "pagecount": 1488
+    }
+  },
+  "1700_cc5NCwAAQBAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 1700,
+      "title": "Misery",
+      "poster_path": "/klPO5oh1LOxiPpdDXZo1ADgpKcw.jpg",
+      "release_date": "1990-11-30",
+      "overview": "After an accident, acclaimed novelist Paul Sheldon is rescued by a nurse who claims to be his biggest fan.  Her obsession takes a dark turn when she holds him captive in her remote Colorado home and forces him to write back to life the popular literary character he killed off.",
+      "popularity": 8.2338,
+      "genre": [
+        "Drama",
+        "Thriller"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "cc5NCwAAQBAJ",
+      "title": "Misery",
+      "thumbnail": "http://books.google.com/books/content?id=cc5NCwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2016-01-05",
+      "description": "After an almost fatal car crash, novelist Paul Sheldon finds himself being nursed by a deranged fan who holds him captive.",
+      "ratings": 4,
+      "categories": [
+        "Fiction"
+      ],
+      "pagecount": 368
+    }
+  },
+  "604079_ohw_aoopJjcC": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 604079,
+      "title": "The Long Walk",
+      "poster_path": "/wobVTa99eW0ht6c1rNNzLkazPtR.jpg",
+      "release_date": "2025-09-10",
+      "overview": "In a dystopian 1970s America, fifty teenage boys take part in a deadly annual walking contest, forced to maintain a minimum pace or be executed, until only one survivor remains.",
+      "popularity": 15.6549,
+      "genre": [
+        "Sci-Fi",
+        "Thriller",
+        "Horror"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "ohw_aoopJjcC",
+      "title": "The Long Walk",
+      "thumbnail": "http://books.google.com/books/content?id=ohw_aoopJjcC&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+      "publishedDate": "1997",
+      "description": "Cavalry officer Slavomir Rawicz was captured by the Red Army in 1939 during the German-Soviet partition of Poland and was sent to the Siberian Gulag. \"The Long Walk\" is the harrowing true tale of how he and six comrades escaped and made their way, on foot, thousands of miles south to British India.",
+      "ratings": 3.5,
+      "categories": [
+        "Biography & Autobiography"
+      ],
+      "pagecount": 260
+    }
+  },
+  "798645_JX_0CwAAQBAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 798645,
+      "title": "The Running Man",
+      "poster_path": "/dKL78O9zxczVgjtNcQ9UkbYLzqX.jpg",
+      "release_date": "2025-11-11",
+      "overview": "Desperate to save his sick daughter, working-class Ben Richards is convinced by The Running Man's charming but ruthless producer to enter the deadly competition game as a last resort. But Ben's defiance, instincts, and grit turn him into an unexpected fan favorite — and a threat to the entire system. As ratings skyrocket, so does the danger, and Ben must outwit not just the Hunters, but a nation addicted to watching him fall.",
+      "popularity": 40.0716,
+      "genre": [
+        "Action",
+        "Thriller",
+        "Sci-Fi"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "JX_0CwAAQBAJ",
+      "title": "The Running Man",
+      "thumbnail": "http://books.google.com/books/content?id=JX_0CwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2016-04-19",
+      "description": "A future world game show offers convicts a chance at freedom if they can run to escape hi-tech killers, and Ben Richards is determined to do so.",
+      "categories": [
+        "Fiction"
+      ],
+      "pagecount": 416
+    }
+  },
+  "865_JX_0CwAAQBAJ": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 865,
+      "title": "The Running Man",
+      "poster_path": "/GTAUOhO4BN0peJVvxGEQydJvUO.jpg",
+      "release_date": "1987-11-13",
+      "overview": "By 2017, the global economy has collapsed and U.S. society has become a totalitarian police state, censoring all cultural activity. The government pacifies the populace by broadcasting a number of game shows in which convicted criminals fight for their lives, including the gladiator-style The Running Man, hosted by the ruthless Damon Killian, where “runners” attempt to evade “stalkers” and certain death for a chance to be pardoned and set free.",
+      "popularity": 5.6324,
+      "genre": [
+        "Action",
+        "Thriller",
+        "Sci-Fi"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "JX_0CwAAQBAJ",
+      "title": "The Running Man",
+      "thumbnail": "http://books.google.com/books/content?id=JX_0CwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2016-04-19",
+      "description": "A future world game show offers convicts a chance at freedom if they can run to escape hi-tech killers, and Ben Richards is determined to do so.",
+      "categories": [
+        "Fiction"
+      ],
+      "pagecount": 416
+    }
+  },
+  "2493_ebW2JpsaOxkC": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 2493,
+      "title": "The Princess Bride",
+      "poster_path": "/2FC9L9MrjBoGHYjYZjdWQdopVYb.jpg",
+      "release_date": "1987-09-25",
+      "overview": "In this enchantingly cracked fairy tale, the beautiful Princess Buttercup and the dashing Westley must overcome staggering odds to find happiness amid six-fingered swordsmen, murderous princes, Sicilians and rodents of unusual size. But even death can't stop these true lovebirds from triumphing.",
+      "popularity": 9.0183,
+      "genre": [
+        "Adventure",
+        "Family",
+        "Fantasy",
+        "Comedy",
+        "Romance"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "ebW2JpsaOxkC",
+      "title": "The Princess Bride",
+      "thumbnail": "http://books.google.com/books/content?id=ebW2JpsaOxkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "2013-05-02",
+      "description": "The beloved novel that spawned the cult classic film. Embark on a tale of true love and swashbuckling adventure like no other. Hello. My name is Inigo Montoya. You killed my father; prepare to die! Beautiful, flaxen-haired Buttercup has fallen for Westley, the farm boy. When he departs to make his fortune, she vows never to love another. But when she hears that his ship has been captured by the Dread Pirate Roberts - who never leaves survivors - her heart is broken. Buttercup's charms draw the attention of the relentless Prince Humperdinck who wants a wife and will go to any lengths to make her his bride. But there are other plans afoot. Plans involving mercenaries, giants, criminal philosophers, villainous counts, and pirates. So begins one of modern storytelling's most beloved tales. ________________________ 'As brilliant and funny as its screen version' Observer 'One of the funniest, most original, and deeply moving novels I have read in a long time' Los Angeles Times 'Both modern and timeless' Neon 'A wonderful fairy tale' The Times",
+      "categories": [
+        "Young Adult Fiction"
+      ],
+      "pagecount": 404
+    }
+  },
+  "595_0NEbHGREK7cC": {
+    "user": "placeholder_user",
+    "score": 0,
+    "movie": {
+      "id": 595,
+      "title": "To Kill a Mockingbird",
+      "poster_path": "/gZycFUMLx2110dzK3nBNai7gfpM.jpg",
+      "release_date": "1962-12-20",
+      "overview": "Scout Finch, 6, and her older brother Jem live in sleepy Maycomb, Alabama, spending much of their time with their friend Dill and spying on their reclusive and mysterious neighbor, Boo Radley. When Atticus, their widowed father and a respected lawyer, defends a black man named Tom Robinson against fabricated rape charges, the trial and tangent events expose the children to evils of racism and stereotyping.",
+      "popularity": 5.1941,
+      "genre": [
+        "Drama"
+      ],
+      "type": "movie"
+    },
+    "book": {
+      "id": "0NEbHGREK7cC",
+      "title": "To Kill a Mockingbird",
+      "thumbnail": "http://books.google.com/books/content?id=0NEbHGREK7cC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      "publishedDate": "1970",
+      "description": "Harper Lee's classic novel of a lawyer in the Deep South defending a black man charged with the rape of a white girl. One of the best-loved stories of all time, To Kill a Mockingbird has earned many distinctions since its original publication in 1960. It won the Pulitzer Prize, has been translated into more than forty languages, sold more than thirty million copies worldwide, and been made into an enormously popular movie. Most recently, librarians across the country gave the book the highest of honors by voting it the best novel of the twentieth century.",
+      "ratings": 4,
+      "categories": [
+        "Fiction"
+      ],
+      "pagecount": 100
+    }
+  }
+}
