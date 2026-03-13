@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Pair from "./pages/pair";
 import User from "./pages/User";
+import BookMovie from "./pages/BookMovie";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/pair" element={<Pair />} />
       <Route path="/user" element={<User />} />
+      <Route path="/BookMovie" element={<BookMovie />} />
     </Routes>
     </div>
   );

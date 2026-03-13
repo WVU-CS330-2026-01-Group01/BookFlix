@@ -1,5 +1,6 @@
 import React from "react";
 import cam from '../assets/cam.png';
+import alaina from '../assets/alaina.png';
 import { useNavigate } from 'react-router-dom';
 
 function User() {
@@ -17,7 +18,7 @@ function User() {
         
         <div className="user-grid">
             <div className="profile-pic"> 
-                <img src={cam} alt="cameron"></img>
+                <img src={alaina} alt="alaina"></img>
             </div>
 
             <div className="username">Username</div>
