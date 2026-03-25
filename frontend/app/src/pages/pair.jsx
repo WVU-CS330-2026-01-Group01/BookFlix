@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import cam from '../assets/cam.png';
+import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
@@ -86,11 +87,11 @@ function Pair() {
 };
 
   return (
-    <div className="logPage">
+    <div className="page">
       <div className="navbar">
         <button className="logo" onClick={() => navigate("/")}>
-          BookFlix
-          <img src={cam} alt="cameron" style={{ width: '50px', height: '50px', marginLeft: '10px' }} />
+          <img src={BookFlix_logo_cropped} alt="BookFlix Logo"
+          style={{ width: '154px', height: '23px'}}></img>
         </button>
         <div className="right-buttons">
           <button className="temp-user-btn" onClick={() => navigate("/user")}>TEMPORARY Profile</button>
@@ -116,7 +117,7 @@ function Pair() {
           {movieResults.length > 0 && !selectedMovie && (
             <ul style={{
               position: 'absolute', top: '52px', left: '5%', right: '5%',
-              background: 'darkblue', border: '1px solid #444', borderRadius: '6px',
+              background: 'var(--dark-purple)', border: '1px solid var(--medium-purple)', borderRadius: '6px',
               listStyle: 'none', margin: 0, padding: '4px 0', zIndex: 100,
               maxHeight: '300px', overflowY: 'auto',
             }}>
@@ -160,7 +161,7 @@ function Pair() {
           )}
         </div>
 
-        <h3 style={{fontSize: '50px', margin: '0 20px', color: 'white' }}>+</h3>
+        <h3 style={{fontSize: '50px', margin: '0 20px', color: 'var(--medium-purple)' }}>+</h3>
 
         {/* Book search box */}
         <div className="pairBox" style={{ position: 'relative', overflow: 'visible' }}>
@@ -175,7 +176,7 @@ function Pair() {
           {bookResults.length > 0 && !selectedBook && (
             <ul style={{
               position: 'absolute', top: '52px', left: '5%', right: '5%',
-              background: 'darkblue', border: '1px solid #444', borderRadius: '6px',
+              background: 'var(--dark-purple)', border: '1px solid var(--medium-purple)', borderRadius: '6px',
               listStyle: 'none', margin: 0, padding: '4px 0', zIndex: 100,
               maxHeight: '300px', overflowY: 'auto',
             }}>

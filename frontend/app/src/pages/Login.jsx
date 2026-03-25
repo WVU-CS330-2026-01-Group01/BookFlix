@@ -1,15 +1,16 @@
 import React from "react";
 import cam from '../assets/cam.png';
+import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
   return (
-    <div className="logPage">
+    <div className="page">
       <div className="navbar">
         <button className="logo" onClick={() => navigate("/")}>
-          BookFlix
-          <img src={cam} alt="cameron" style={{ width: '50px', height: '50px', marginLeft: '10px' }}></img>
+          <img src={BookFlix_logo_cropped} alt="BookFlix Logo"
+          style={{ width: '154px', height: '23px'}}></img>
         </button>
       </div>
 
