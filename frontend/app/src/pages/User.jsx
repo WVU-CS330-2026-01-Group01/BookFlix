@@ -1,6 +1,7 @@
 import React from "react";
 import cam from '../assets/cam.png';
 import alaina from '../assets/alaina.png';
+import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 
 function User() {
@@ -9,8 +10,8 @@ function User() {
     <div className="page">
       <div className="navbar">
         <button className="logo" onClick={() => navigate("/")}>
-          BookFlix
-          <img src={cam} alt="cameron" style={{ width: '50px', height: '50px', marginLeft: '10px' }}></img>
+          <img src={BookFlix_logo_cropped} alt="BookFlix Logo"
+          style={{ width: '154px', height: '23px'}}></img>
         </button>
       </div>
 
@@ -24,7 +25,7 @@ function User() {
             <div className="username">Username</div>
 
             <div className="bio">
-                <div className="bio-title">Bio</div>
+                <div style={{ color: 'var(--medium-purple)' }}>Bio</div>
                 <div className="bio-text" contentEditable="true">Click here to edit your bio</div>
             </div>
 
