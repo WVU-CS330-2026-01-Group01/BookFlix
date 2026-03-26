@@ -40,7 +40,7 @@ function Pair() {
 
   // Book search
   useEffect(() => {
-    if (!bookQuery.trim() || bookQuery.length < 3) { setBookResults([]); return; }
+    if (!bookQuery.trim()) { setBookResults([]); return; }
     const timer = setTimeout(async () => {
       setIsSearchingBook(true);
       try {
