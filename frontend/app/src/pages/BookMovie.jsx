@@ -1,11 +1,8 @@
 import React from 'react';
-import cam from '../assets/cam.png';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
-
+import Rating from "../components/Rating";
 
 
 function BookMovie() {
@@ -49,7 +46,8 @@ function BookMovie() {
         <div style={{
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'flex-start',
+          alignItems: 'stretch',
+          gap: '24px',
         }}>
 
           {/* Movie side */}
@@ -59,22 +57,29 @@ function BookMovie() {
             alignItems: 'center',
             flex: 1,
             padding: '20px 40px',
+            maxWidth: '600px',
           }}>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${pair.movie.poster_path}`}
-              alt={pair.movie.title}
-              style={{ height: '400px', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
-            />
-            <h2 style={{ marginTop: '20px', textAlign: 'center' }}>{pair.movie.title}</h2>
-            <p style={{ color: '#aaa' }}>{pair.movie.release_date?.slice(0, 4)}</p>
-            {pair.movie.genre?.length > 0 && (
-              <p style={{ color: '#ccc', textAlign: 'center', fontSize: '14px' }}>
-                {pair.movie.genre.join(", ")}
+            <div style={{ width: '100%' }}>
+              <img
+                src={`https://image.tmdb.org/t/p/w500${pair.movie.poster_path}`}
+                alt={pair.movie.title}
+                style={{ height: '400px', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'block', margin: '0 auto' }}
+              />
+              <h2 style={{ marginTop: '20px', textAlign: 'center' }}>{pair.movie.title}</h2>
+              <p style={{ color: '#aaa', textAlign: 'center' }}>{pair.movie.release_date?.slice(0, 4)}</p>
+              {pair.movie.genre?.length > 0 && (
+                <p style={{ color: '#ccc', textAlign: 'center', fontSize: '14px' }}>
+                  {pair.movie.genre.join(", ")}
+                </p>
+              )}
+              <p style={{ color: '#ddd', textAlign: 'left', fontSize: '14px', marginTop: '15px', lineHeight: '1.6' }}>
+                {pair.movie.overview}
               </p>
-            )}
-            <p style={{ color: '#ddd', textAlign: 'left', fontSize: '14px', marginTop: '15px', lineHeight: '1.6' }}>
-              {pair.movie.overview}
-            </p>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: 'auto', paddingTop: '30px', width: '100%' }}>
+              <h3>Rate the Movie</h3>
+              <Rating />
+            </div>
           </div>
 
           {/* Divider */}
@@ -92,31 +97,30 @@ function BookMovie() {
             alignItems: 'center',
             flex: 1,
             padding: '20px 40px',
+            maxWidth: '600px',
           }}>
-            <img
-              src={pair.book.thumbnail}
-              alt={pair.book.title}
-              style={{ height: '400px', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
-            />
-            <h2 style={{ marginTop: '20px', textAlign: 'center' }}>{pair.book.title}</h2>
-            <p style={{ color: '#aaa' }}>{pair.book.publishedDate?.slice(0, 4)}</p>
-            {pair.book.categories?.length > 0 && (
-              <p style={{ color: '#ccc', textAlign: 'center', fontSize: '14px' }}>
-                {pair.book.categories.join(", ")}
+            <div style={{ width: '100%' }}>
+              <img
+                src={pair.book.thumbnail}
+                alt={pair.book.title}
+                style={{ height: '400px', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'block', margin: '0 auto' }}
+              />
+              <h2 style={{ marginTop: '20px', textAlign: 'center' }}>{pair.book.title}</h2>
+              <p style={{ color: '#aaa', textAlign: 'center' }}>{pair.book.publishedDate?.slice(0, 4)}</p>
+              {pair.book.categories?.length > 0 && (
+                <p style={{ color: '#ccc', textAlign: 'center', fontSize: '14px' }}>
+                  {pair.book.categories.join(", ")}
+                </p>
+              )}
+              <p style={{ color: '#ddd', textAlign: 'left', fontSize: '14px', marginTop: '15px', lineHeight: '1.6' }}>
+                {pair.book.description}
               </p>
-            )}
-            <p style={{ color: '#ddd', textAlign: 'left', fontSize: '14px', marginTop: '15px', lineHeight: '1.6' }}>
-              {pair.book.description}
-            </p>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: 'auto', paddingTop: '30px', width: '100%' }}>
+              <h3>Rate the Book</h3>
+              <Rating />
+            </div>
           </div>
-        </div>
-
-
-
-        <div style={{ textAlign: 'center', marginTop: '30px' }}>
-          <span style={{background: 'yellow',color: 'black'}}>
-            rating system goes here
-          </span>
         </div>
 
         <div style={{ textAlign: 'right', marginTop: '30px' }}>

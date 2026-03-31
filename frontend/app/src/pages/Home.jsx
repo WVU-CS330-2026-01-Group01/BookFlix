@@ -3,9 +3,8 @@ import cam from '../assets/cam.png';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
-
-
 
 function Home() {
   const navigate = useNavigate();
@@ -20,49 +19,49 @@ function Home() {
   }, []);
 
   return (
-    // <div style={{ textAlign: 'center', marginTop: '50px' }}>
-    //   <h1>CS330 Project Baseline</h1>
-    //   <p>Your Vite + React app is running correctly!</p>
-    // </div>
-
-
     <div className="page">
-
-
-      {/* Navbar */}
       <div className="navbar">
         <button className="logo" onClick={() => navigate("/")}>
-          <img src={BookFlix_logo_cropped} alt="BookFlix Logo"
-          style={{ width: '154px', height: '23px'}}></img>
+          <img
+            src={BookFlix_logo_cropped}
+            alt="BookFlix Logo"
+            style={{ width: '154px', height: '23px' }}
+          ></img>
         </button>
-          <div className="right-buttons">
-            <button className="temp-user-btn" onClick={() => navigate("/user")}>TEMPORARY Profile</button>
-            <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
-          </div>
+        <div className="right-buttons">
+          <button className="temp-user-btn" onClick={() => navigate("/user")}>TEMPORARY Profile</button>
+          <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
+        </div>
       </div>
 
-      {/* Main content wrapper */}
       <div className="main">
-
-        {/* Search Bar */}
         <div className="search-section">
           <input type="text" placeholder="Search..." />
         </div>
 
-      {/* Content Rows */}
+        <div className="home-toolbar">
+          <div>
+            <h1 className="home-toolbar-title">Discover Pairs</h1>
+            <p className="home-toolbar-subtitle">Browse movie and book matches or make a new one.</p>
+          </div>
+          <button className="home-add-pair-button" onClick={() => navigate("/pair")}>
+            Create Pair
+          </button>
+        </div>
+
         <div className="content-area">
           <div className="row">
-          <h2>Trending</h2>
+            <h2>Trending</h2>
             <div className="card-row">
               {Object.entries(pairs).map(([key, pair]) => (
-                <button className="card" onClick={() => navigate("/BookMovie", { state:{pair}})}key={key}>
+                <button className="card" onClick={() => navigate("/BookMovie", { state: { pair } })} key={key}>
                   <img
                     src={`https://image.tmdb.org/t/p/w500${pair.movie.poster_path}`}
                     alt={pair.movie.title}
-                    style={{ height: '200px', borderRadius: '6px 0px 0px 6px'}}
+                    style={{ height: '200px', borderRadius: '6px 0px 0px 6px' }}
                   />
                   <div className="card-info">
-                    <p style={{ color: 'white', fontSize: '13px', margin: '2px 0', opacity: '1'}}>{pair.movie.title}</p>
+                    <p style={{ color: 'white', fontSize: '13px', margin: '2px 0', opacity: '1' }}>{pair.movie.title}</p>
                   </div>
                   <img
                     src={pair.book.thumbnail}
@@ -73,7 +72,6 @@ function Home() {
               ))}
             </div>
           </div>
-
 
           {/* <div className="row">
             <h2>Recommendations</h2>
@@ -97,21 +95,10 @@ function Home() {
               <div className="card">book/movie</div>
             </div>
           </div> */}
-
-
         </div>
-
-        {/*make new movie book pair button*/}
-        <button className ="add-pair-button" onClick={() => navigate("/pair")}>
-          Add Movie-Book Pair
-        </button>
-
       </div>
-      
-      
     </div>
-
   );
-} 
+}
 
 export default Home;
