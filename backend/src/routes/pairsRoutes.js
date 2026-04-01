@@ -33,21 +33,21 @@ function createPairsRouter() {
           score = VALUES(score)`,
         [
           key,
-          "placeholder_user", // replace after login is implemented
+          "placeholder_user",
           0,
           String(movie.id),
-          movie.title ?? movie.name,
-          movie.poster_path,
-          movie.release_date ?? movie.first_air_date,
-          movie.overview,
-          movie.popularity,
+          movie.title ?? movie.name ?? null,
+          movie.poster_path ?? null,
+          movie.release_date ?? movie.first_air_date ?? null,
+          movie.overview ?? null,
+          movie.popularity ?? null,
           JSON.stringify(genres),
-          movie.media_type,
+          movie.media_type ?? null,
           String(book.id),
-          book.volumeInfo?.title,
-          book.volumeInfo?.imageLinks?.thumbnail,
-          book.volumeInfo?.publishedDate,
-          book.volumeInfo?.description,
+          book.volumeInfo?.title ?? null,
+          book.volumeInfo?.imageLinks?.thumbnail ?? null,
+          book.volumeInfo?.publishedDate ?? null,
+          book.volumeInfo?.description ?? null,
           book.volumeInfo?.averageRating ?? null,
           JSON.stringify(book.volumeInfo?.categories ?? []),
           book.volumeInfo?.pageCount ?? null,
@@ -65,7 +65,7 @@ function createPairsRouter() {
     try {
       const [rows] = await getPool().execute("SELECT * FROM pair_data.movie_book_pairs");
 
-      // Reshape rows back into the same object format your frontend expects
+      // Reshape rows back into object format frontend expects
       const pairs = {};
       for (const row of rows) {
         pairs[row.id] = {
