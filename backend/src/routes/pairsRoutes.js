@@ -1,8 +1,5 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
-
-const PAIRS_FILE = path.resolve(__dirname, "../../data/pair_data.json");
+const { getPool } = require("../config/database"); 
 
 const TMDB_GENRES = {
   28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
@@ -21,50 +18,86 @@ function createPairsRouter() {
     try {
       const { movie, book } = request.body;
       const key = `${movie.id}_${book.id}`;
+      const genres = (movie.genre_ids ?? []).map(id => TMDB_GENRES[id]).filter(Boolean);
 
-      // Read existing pairs
-      const raw = fs.readFileSync(PAIRS_FILE, "utf-8");
-      const pairs = JSON.parse(raw);
+      const [result] = await getPool().execute(
+        `INSERT INTO pair_data.movie_book_pairs (
+          id, user, score,
+          movie_id, movie_title, movie_poster_path, movie_release_date,
+          movie_overview, movie_popularity, movie_genre, movie_type,
+          book_id, book_title, book_thumbnail, book_publishedDate,
+          book_description, book_ratings, book_categories, book_pagecount
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          movie_title = VALUES(movie_title),
+          score = VALUES(score)`,
+        [
+          key,
+          "placeholder_user", // replace after login is implemented
+          0,
+          String(movie.id),
+          movie.title ?? movie.name,
+          movie.poster_path,
+          movie.release_date ?? movie.first_air_date,
+          movie.overview,
+          movie.popularity,
+          JSON.stringify(genres),
+          movie.media_type,
+          String(book.id),
+          book.volumeInfo?.title,
+          book.volumeInfo?.imageLinks?.thumbnail,
+          book.volumeInfo?.publishedDate,
+          book.volumeInfo?.description,
+          book.volumeInfo?.averageRating ?? null,
+          JSON.stringify(book.volumeInfo?.categories ?? []),
+          book.volumeInfo?.pageCount ?? null,
+        ]
+      );
 
-      // Add new pair
-      pairs[key] = {
-        user: "placeholder_user", // change this after implementing login!!!!
-        score: 0,
-        movie: {
-          id: movie.id,
-          title: movie.title ?? movie.name,
-          poster_path: movie.poster_path,
-          release_date: movie.release_date ?? movie.first_air_date,
-          overview: movie.overview,
-          popularity: movie.popularity,
-          genre: (movie.genre_ids ?? []).map(id => TMDB_GENRES[id]).filter(Boolean), 
-          type: movie.media_type,
-        },
-        book: {
-          id: book.id,
-          title: book.volumeInfo?.title,
-          thumbnail: book.volumeInfo?.imageLinks?.thumbnail,
-          publishedDate: book.volumeInfo?.publishedDate,
-          description: book.volumeInfo?.description,
-          ratings: book.volumeInfo?.averageRating,
-          categories: book.volumeInfo?.categories,
-          pagecount: book.volumeInfo?.pageCount,
-        },
-      };
-
-      fs.writeFileSync(PAIRS_FILE, JSON.stringify(pairs, null, 2));
       response.json({ ok: true, key });
     } catch (error) {
+      console.error("DB error:", error);
       response.status(500).json({ error: error.message });
     }
   });
 
-  router.get("/all", (request, response) => {
+  router.get("/all", async (request, response) => {
     try {
-      const raw = fs.readFileSync(PAIRS_FILE, "utf-8");
-      response.json(JSON.parse(raw));
-    } catch {
-      response.json({});
+      const [rows] = await getPool().execute("SELECT * FROM pair_data.movie_book_pairs");
+
+      // Reshape rows back into the same object format your frontend expects
+      const pairs = {};
+      for (const row of rows) {
+        pairs[row.id] = {
+          user: row.user,
+          score: row.score,
+          movie: {
+            id: row.movie_id,
+            title: row.movie_title,
+            poster_path: row.movie_poster_path,
+            release_date: row.movie_release_date,
+            overview: row.movie_overview,
+            popularity: row.movie_popularity,
+            genre: row.movie_genre,       // already parsed by MySQL2
+            type: row.movie_type,
+          },
+          book: {
+            id: row.book_id,
+            title: row.book_title,
+            thumbnail: row.book_thumbnail,
+            publishedDate: row.book_publishedDate,
+            description: row.book_description,
+            ratings: row.book_ratings,
+            categories: row.book_categories, // already parsed by MySQL2
+            pagecount: row.book_pagecount,
+          },
+        };
+      }
+
+      response.json(pairs);
+    } catch (error) {
+      console.error("DB error:", error);
+      response.status(500).json({ error: error.message });
     }
   });
 
