@@ -1,12 +1,11 @@
 import React from 'react';
-import cam from '../assets/cam.png';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
-function Home() {
+function Home({ authenticated, authUser, onLogout }) {
   const navigate = useNavigate();
 
   const [pairs, setPairs] = useState([]);
@@ -29,8 +28,19 @@ function Home() {
           ></img>
         </button>
         <div className="right-buttons">
-          <button className="temp-user-btn" onClick={() => navigate("/user")}>TEMPORARY Profile</button>
-          <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
+          {authenticated ? (
+            <>
+              <button className="temp-user-btn" onClick={() => navigate("/user")}>
+                {authUser?.username ?? "Profile"}
+              </button>
+              <button className="login-btn" onClick={onLogout}>Logout</button>
+            </>
+          ) : (
+            <>
+              <button className="temp-user-btn" onClick={() => navigate("/signup")}>Sign Up</button>
+              <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
+            </>
+          )}
         </div>
       </div>
 

@@ -3,14 +3,16 @@
 ## Folder Layout
 
 ```text
+docs/
+  integrations/
+    tmdb/
+      api-guide.md
+      data-flow.md
 backend/
   .env
   .env.example
   package.json
   package-lock.json
-  docs/
-    TMDB_API_GUIDE.md
-    TMDB_DATA_FLOW_DIAGRAM.md
   src/
     app.js
     server.js
@@ -29,8 +31,8 @@ What goes where:
 - `src/config/env.js`: loads environment variables once
 - `src/routes/tmdbRoutes.js`: backend routes the frontend can call
 - `src/services/tmdbClient.js`: low-level TMDB API reader
-- `docs/TMDB_API_GUIDE.md`: developer docs for the TMDB backend
-- `docs/TMDB_DATA_FLOW_DIAGRAM.md`: visual beginner-friendly Mermaid diagrams
+- `docs/integrations/tmdb/api-guide.md`: developer docs for the TMDB backend
+- `docs/integrations/tmdb/data-flow.md`: visual diagrams for the request flow
 
 ## Install
 
@@ -78,7 +80,7 @@ FRONTEND_ORIGIN=http://localhost:5173
 4. The TMDB client sends the request to TMDB.
 5. The backend returns JSON to the frontend.
 
-For the visual version, see [TMDB_DATA_FLOW_DIAGRAM.md](C:/Users/luke/Desktop/cs330-2026-group01/backend/docs/TMDB_DATA_FLOW_DIAGRAM.md).
+For the visual version, see [data-flow.md](./data-flow.md).
 
 ## Frontend Example
 

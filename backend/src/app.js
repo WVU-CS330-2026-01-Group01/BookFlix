@@ -1,18 +1,19 @@
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
 
 const { getDatabaseStatus } = require("./config/database");
 const env = require("./config/env");
+const { createAuthRouter } = require("./routes/authRoutes");
 const { createGoogleBooksRouter } = require("./routes/googleBooksRoutes");
 const { createTmdbRouter } = require("./routes/tmdbRoutes");
 const { createPairsRouter } = require("./routes/pairsRoutes");
-const { createUserRouter } = require("./routes/userRoutes");
-
 
 const app = express();
 
-
-
+if (env.nodeEnv === "production") {
+  app.set("trust proxy", 1);
+}
 
 app.use(
   cors({
@@ -21,8 +22,7 @@ app.use(
   }),
 );
 app.use(express.json());
-
-
+app.use(cookieParser());
 
 app.get("/health", async (request, response) => {
   response.json({
@@ -38,9 +38,9 @@ if (env.nodeEnv === "development") {
   });
 }
 
+app.use("/auth", createAuthRouter());
 app.use("/api/google-books", createGoogleBooksRouter());
 app.use("/api/tmdb", createTmdbRouter());
 app.use("/api/pairs", createPairsRouter());
-app.use("/api/users", createUserRouter());
 
 module.exports = app;

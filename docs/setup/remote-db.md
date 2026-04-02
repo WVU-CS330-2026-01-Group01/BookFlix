@@ -39,6 +39,7 @@ DB_SSL_CA_PATH=./config/DigiCertGlobalRootG2.crt.pem
 
 PORT=3000
 FRONTEND_ORIGIN=http://localhost:5173
+JWT_SECRET=replace-with-a-local-secret
 TMDB_TOKEN=...
 GOOGLE_BOOKS_API_KEY=...
 ```
@@ -46,6 +47,7 @@ GOOGLE_BOOKS_API_KEY=...
 Notes:
 
 - Do not commit `backend/.env`.
+- Set a real `JWT_SECRET` instead of relying on a fallback dev value.
 - The CA certificate file is already in `backend/config/`.
 - The CA certificate was committed so the backend can use a known local SSL file path without each person keeping their own copy in `Downloads`.
 - This matches the Sprint 2 example repo, which also committed the Azure MySQL CA certificate file.
