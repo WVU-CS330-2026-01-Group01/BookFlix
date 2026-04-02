@@ -1,5 +1,5 @@
 const express = require("express");
-const { getPool } = require("../config/database"); 
+const { getPool } = require("../config/database");
 
 const TMDB_GENRES = {
   28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
@@ -11,8 +11,9 @@ const TMDB_GENRES = {
   10766: "Soap", 10767: "Talk", 10768: "War & Politics"
 };
 
-function createPairsRouter() {
+function createPairsRouter(options = {}) {
   const router = express.Router();
+  const database = options.getPool ?? getPool;
 
   router.post("/save", async (request, response) => {
     try {
@@ -20,7 +21,7 @@ function createPairsRouter() {
       const key = `${movie.id}_${book.id}`;
       const genres = (movie.genre_ids ?? []).map(id => TMDB_GENRES[id]).filter(Boolean);
 
-      const [result] = await getPool().execute(
+      await database().execute(
         `INSERT INTO pair_data.movie_book_pairs (
           id, user, score,
           movie_id, movie_title, movie_poster_path, movie_release_date,
@@ -63,12 +64,13 @@ function createPairsRouter() {
 
   router.get("/all", async (request, response) => {
     try {
-      const [rows] = await getPool().execute("SELECT * FROM pair_data.movie_book_pairs");
+      const [rows] = await database().execute("SELECT * FROM pair_data.movie_book_pairs");
 
       // Reshape rows back into object format frontend expects
       const pairs = {};
       for (const row of rows) {
         pairs[row.id] = {
+          id: row.id,
           user: row.user,
           score: row.score,
           movie: {
@@ -98,6 +100,49 @@ function createPairsRouter() {
     } catch (error) {
       console.error("DB error:", error);
       response.status(500).json({ error: error.message });
+    }
+  });
+
+  router.post("/:id/vote", async (request, response) => {
+    try {
+      const { id } = request.params;
+      const { direction } = request.body ?? {};
+
+      if (!id) {
+        return response.status(400).json({ error: "Pair id is required." });
+      }
+
+      if (direction !== "up" && direction !== "down") {
+        return response.status(400).json({ error: "Vote direction must be 'up' or 'down'." });
+      }
+
+      const amount = direction === "up" ? 1 : -1;
+      const [updateResult] = await database().execute(
+        `UPDATE pair_data.movie_book_pairs
+         SET score = score + ?
+         WHERE id = ?`,
+        [amount, id],
+      );
+
+      if (updateResult.affectedRows === 0) {
+        return response.status(404).json({ error: "Pair not found." });
+      }
+
+      const [rows] = await database().execute(
+        `SELECT score
+         FROM pair_data.movie_book_pairs
+         WHERE id = ?`,
+        [id],
+      );
+
+      return response.json({
+        ok: true,
+        id,
+        score: rows[0]?.score ?? null,
+      });
+    } catch (error) {
+      console.error("DB error:", error);
+      return response.status(500).json({ error: error.message });
     }
   });
 
