@@ -508,12 +508,13 @@ h1 {
 }
 
 .pair-score-panel {
-  width: min(80%, 100px);
+  width: min(80%, 400px);
   margin: 0 auto 24px;
   padding: 18px 22px;
   display: flex;
-  justify-content: space-between;
+  justify-content: column;
   align-items: center;
+  flex-direction: center;
   gap: 20px;
   background: rgba(20, 10, 35, 0.9);
   border: 1px solid var(--medium-purple);
@@ -532,14 +533,28 @@ h1 {
   font-size: 32px;
   font-weight: bold;
   color: white;
+  text-align: center;
+}
+
+.pair-score-panel {
+  width: 80%;
+  max-width: 200px;
+  margin: 0 auto 24px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.pair-score-value {
+  text-align: center;
 }
 
 .pair-vote-actions {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  margin-top: 8px;
+  justify-content: center;
+  gap: 16px;
 }
 
 .pair-vote-button {
@@ -551,7 +566,7 @@ h1 {
   cursor: pointer;
   font-size: 50px;
   font-weight: bold;
-  display: center;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
