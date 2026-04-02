@@ -3,9 +3,24 @@ import cam from '../assets/cam.png';
 import alaina from '../assets/alaina.png';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
+import { use } from "react";
+import { useEffect } from "react";
 
 function User() {
   const navigate = useNavigate();
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+  }, [user]);
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="page">
       <div className="navbar">
@@ -22,7 +37,7 @@ function User() {
                 <img src={alaina} alt="alaina"></img>
             </div>
 
-            <div className="username">Username</div>
+            <div className="username">{user?.username}</div>
 
             <div className="bio">
               <div style={{ color: 'var(--medium-purple)' }}>Bio</div>

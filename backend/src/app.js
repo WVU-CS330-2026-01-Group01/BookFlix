@@ -7,6 +7,7 @@ const { createGoogleBooksRouter } = require("./routes/googleBooksRoutes");
 const { createTmdbRouter } = require("./routes/tmdbRoutes");
 const { createPairsRouter } = require("./routes/pairsRoutes");
 const { createUserRouter } = require("./routes/userRoutes");
+const { createLoginRouter } = require("./routes/loginRoutes");
 
 
 const app = express();
@@ -42,5 +43,6 @@ app.use("/api/google-books", createGoogleBooksRouter());
 app.use("/api/tmdb", createTmdbRouter());
 app.use("/api/pairs", createPairsRouter());
 app.use("/api/users", createUserRouter());
+app.use("/api/users", createLoginRouter());
 
 module.exports = app;
