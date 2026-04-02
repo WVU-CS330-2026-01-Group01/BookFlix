@@ -1,16 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Rating from "../components/Rating";
 
+const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
 function BookMovie() {
   const navigate = useNavigate();
   const location = useLocation();
   const { pair } = location.state || {};;
+  const [score, setScore] = useState(pair?.score ?? 0);
+  const [isVoting, setIsVoting] = useState(false);
+  const [voteError, setVoteError] = useState("");
 
-    if (!pair) {
+  const handleVote = async (direction) => {
+    if (!pair?.id || isVoting) {
+      return;
+    }
+
+    const delta = direction === "up" ? 1 : -1;
+    const previousScore = score;
+
+    setIsVoting(true);
+    setVoteError("");
+    setScore(previousScore + delta);
+
+    try {
+      const response = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/vote`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ direction }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Failed to update score.");
+      }
+
+      setScore(data.score ?? previousScore + delta);
+    } catch (error) {
+      setScore(previousScore);
+      setVoteError(error.message);
+    } finally {
+      setIsVoting(false);
+    }
+  };
+
+  if (!pair) {
     return (
       <div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>
         No pair selected. <button onClick={() => navigate("/")}>Go Home</button>
@@ -42,6 +82,31 @@ function BookMovie() {
 
       {/* Main content wrapper */}
       <div style={{ color: 'white', padding: '30px' }}>
+        <div className="pair-score-panel">
+          <div>
+            <div className="pair-score-label">Pair score</div>
+            <div className="pair-score-value">{score}</div>
+          </div>
+          <div className="pair-vote-actions">
+            <button
+              className="pair-vote-button"
+              type="button"
+              onClick={() => handleVote("up")}
+              disabled={isVoting}
+            >
+              Like pair
+            </button>
+            <button
+              className="pair-vote-button pair-vote-button-negative"
+              type="button"
+              onClick={() => handleVote("down")}
+              disabled={isVoting}
+            >
+              Dislike pair
+            </button>
+          </div>
+        </div>
+        {voteError ? <p className="pair-vote-error">{voteError}</p> : null}
 
         <div style={{
           display: 'flex',

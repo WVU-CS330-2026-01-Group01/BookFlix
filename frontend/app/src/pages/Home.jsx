@@ -54,7 +54,7 @@ function Home() {
             <h2>Trending</h2>
             <div className="card-row">
               {Object.entries(pairs).map(([key, pair]) => (
-                <button className="card" onClick={() => navigate("/BookMovie", { state: { pair } })} key={key}>
+                <button className="card" onClick={() => navigate("/BookMovie", { state: { pair: { ...pair, id: pair.id ?? key } } })} key={key}>
                   <img
                     src={`https://image.tmdb.org/t/p/w500${pair.movie.poster_path}`}
                     alt={pair.movie.title}
@@ -62,6 +62,7 @@ function Home() {
                   />
                   <div className="card-info">
                     <p style={{ color: 'white', fontSize: '13px', margin: '2px 0', opacity: '1' }}>{pair.movie.title}</p>
+                    <p style={{ color: '#d3c7e6', fontSize: '12px', margin: '6px 0 0' }}>Score: {pair.score ?? 0}</p>
                   </div>
                   <img
                     src={pair.book.thumbnail}
