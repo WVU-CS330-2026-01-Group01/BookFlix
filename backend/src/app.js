@@ -6,9 +6,12 @@ const env = require("./config/env");
 const { createGoogleBooksRouter } = require("./routes/googleBooksRoutes");
 const { createTmdbRouter } = require("./routes/tmdbRoutes");
 const { createPairsRouter } = require("./routes/pairsRoutes");
+const { createUserRouter } = require("./routes/userRoutes");
 
 
 const app = express();
+
+
 
 
 app.use(
@@ -18,6 +21,8 @@ app.use(
   }),
 );
 app.use(express.json());
+
+
 
 app.get("/health", async (request, response) => {
   response.json({
@@ -36,5 +41,6 @@ if (env.nodeEnv === "development") {
 app.use("/api/google-books", createGoogleBooksRouter());
 app.use("/api/tmdb", createTmdbRouter());
 app.use("/api/pairs", createPairsRouter());
+app.use("/api/users", createUserRouter());
 
 module.exports = app;
