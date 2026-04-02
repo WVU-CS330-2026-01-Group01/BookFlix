@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import cam from '../assets/cam.png';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
-function Pair() {
+function Pair({ authUser, onLogout }) {
   const navigate = useNavigate();
 
   const [movieQuery, setMovieQuery] = useState("");
@@ -17,6 +16,7 @@ function Pair() {
   const [bookResults, setBookResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [isSearchingBook, setIsSearchingBook] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   // Movie search
   useEffect(() => {
@@ -71,20 +71,34 @@ function Pair() {
   };
 
   const handleSavePair = async () => {
-  try {
-    const res = await fetch(`${baseUrl}/api/pairs/save`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ movie: selectedMovie, book: selectedBook }),
-    });
-    const data = await res.json();
-    if (data.ok) {
+    setSaveError("");
+
+    try {
+      const res = await fetch(`${baseUrl}/api/pairs/save`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ movie: selectedMovie, book: selectedBook }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        throw new Error(data.error ?? "Failed to save pair.");
+      }
+
       alert(`Pair saved! (${data.key})`);
+      navigate("/", { replace: true });
+    } catch (err) {
+      console.error("Failed to save pair:", err);
+      setSaveError(err.message);
     }
-  } catch (err) {
-    console.error("Failed to save pair:", err);
-  }
-};
+  };
 
   return (
     <div className="page">
@@ -94,8 +108,10 @@ function Pair() {
           style={{ width: '154px', height: '23px'}}></img>
         </button>
         <div className="right-buttons">
-          <button className="temp-user-btn" onClick={() => navigate("/user")}>TEMPORARY Profile</button>
-          <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
+          <button className="temp-user-btn" onClick={() => navigate("/user")}>
+            {authUser?.username ?? "Profile"}
+          </button>
+          <button className="login-btn" onClick={onLogout}>Logout</button>
         </div>
       </div>
 
@@ -227,6 +243,7 @@ function Pair() {
           Post Pair!
         </button>
       )}
+      {saveError ? <p style={{ color: "#ffb6c1", textAlign: "center" }}>{saveError}</p> : null}
     </div>
   );
 }

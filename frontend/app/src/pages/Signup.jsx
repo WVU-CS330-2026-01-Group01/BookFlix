@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import cam from '../assets/cam.png';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 
-const baseUrl ="http://localhost:3000";
+const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
 
 function Signup() {
@@ -12,30 +11,38 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSignup = async () => {
+  const handleSignup = async (event) => {
+    event.preventDefault();
+    setErrorMessage("");
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setErrorMessage("Passwords do not match.");
       return;
     }
+
     try {
-      const response = await fetch(`${baseUrl}/api/users/signup`, {
+      const response = await fetch(`${baseUrl}/auth/register`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
       });
+
       const data = await response.json();
-      if (data.ok) {
-        alert("Signup successful!");
-        navigate("/login");
-      } else {
-        alert("Signup failed: " + data.error);
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Signup failed.");
       }
+
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error("Signup error:", error);
-      alert("An error occurred during signup. Please try again." + error.message);
+      setErrorMessage(error.message);
     }
-  }
+  };
+
   return (
     <div className="page">
       <div className="navbar">
@@ -47,14 +54,14 @@ function Signup() {
 
       <h1>Signup Page</h1>
       <div className="logBox">
-        <div className="signBars">
+        <form className="signBars" onSubmit={handleSignup}>
           <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input type="text" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <input type="text" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-          <button className="login-btn" onClick={handleSignup}>Create Account</button>
-        </div>
-
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
+          <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} autoComplete="new-password" />
+          {errorMessage ? <p style={{ color: "#ffb6c1", margin: 0 }}>{errorMessage}</p> : null}
+          <button className="login-btn" type="submit">Create Account</button>
+        </form>
       </div>
     </div>
   );

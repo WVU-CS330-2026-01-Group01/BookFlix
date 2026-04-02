@@ -3,14 +3,16 @@
 ## Folder Layout
 
 ```text
+docs/
+  integrations/
+    google-books/
+      api-guide.md
+      data-flow.md
 backend/
   .env
   .env.example
   package.json
   package-lock.json
-  docs/
-    GOOGLE_BOOKS_API_GUIDE.md
-    GOOGLE_BOOKS_DATA_FLOW_DIAGRAM.md
   src/
     app.js
     server.js
@@ -29,8 +31,8 @@ What goes where:
 - `src/config/env.js`: loads environment variables once
 - `src/routes/googleBooksRoutes.js`: backend routes the frontend can call
 - `src/services/googleBooksClient.js`: low-level Google Books API reader
-- `docs/GOOGLE_BOOKS_API_GUIDE.md`: developer docs for the Google Books backend
-- `docs/GOOGLE_BOOKS_DATA_FLOW_DIAGRAM.md`: visual beginner-friendly Mermaid diagrams
+- `docs/integrations/google-books/api-guide.md`: developer docs for the Google Books backend
+- `docs/integrations/google-books/data-flow.md`: visual diagrams for the request flow
 
 ## Install
 
@@ -83,7 +85,7 @@ during ordinary book searching in the add-pair UI.
 4. The Google Books client sends the request to Google Books.
 5. The backend returns JSON to the frontend.
 
-For the visual version, see [GOOGLE_BOOKS_DATA_FLOW_DIAGRAM.md](./GOOGLE_BOOKS_DATA_FLOW_DIAGRAM.md).
+For the visual version, see [data-flow.md](./data-flow.md).
 
 ## Frontend Example
 

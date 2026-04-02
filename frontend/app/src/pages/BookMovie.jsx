@@ -6,7 +6,7 @@ import Rating from "../components/Rating";
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
-function BookMovie() {
+function BookMovie({ authenticated, authUser, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { pair } = location.state || {};;
@@ -75,8 +75,19 @@ function BookMovie() {
           style={{ width: '154px', height: '23px'}}></img>
         </button>
           <div className="right-buttons">
-            <button className="temp-user-btn" onClick={() => navigate("/user")}>TEMPORARY Profile</button>
-            <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
+            {authenticated ? (
+              <>
+                <button className="temp-user-btn" onClick={() => navigate("/user")}>
+                  {authUser?.username ?? "Profile"}
+                </button>
+                <button className="login-btn" onClick={onLogout}>Logout</button>
+              </>
+            ) : (
+              <>
+                <button className="temp-user-btn" onClick={() => navigate("/signup")}>Sign Up</button>
+                <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
+              </>
+            )}
           </div>
       </div>
 

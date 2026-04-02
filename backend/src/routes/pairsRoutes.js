@@ -1,5 +1,6 @@
 const express = require("express");
 const { getPool } = require("../config/database");
+const { authMiddleware } = require("../middleware/authMiddleware");
 
 const TMDB_GENRES = {
   28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
@@ -15,9 +16,14 @@ function createPairsRouter(options = {}) {
   const router = express.Router();
   const database = options.getPool ?? getPool;
 
-  router.post("/save", async (request, response) => {
+  router.post("/save", authMiddleware, async (request, response) => {
     try {
       const { movie, book } = request.body;
+
+      if (!movie?.id || !book?.id) {
+        return response.status(400).json({ error: "Movie and book are required." });
+      }
+
       const key = `${movie.id}_${book.id}`;
       const genres = (movie.genre_ids ?? []).map(id => TMDB_GENRES[id]).filter(Boolean);
 
@@ -34,7 +40,7 @@ function createPairsRouter(options = {}) {
           score = VALUES(score)`,
         [
           key,
-          "placeholder_user",
+          request.user.username,
           0,
           String(movie.id),
           movie.title ?? movie.name ?? null,

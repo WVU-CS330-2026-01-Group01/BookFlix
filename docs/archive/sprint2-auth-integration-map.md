@@ -1,5 +1,8 @@
 # BookFlix Sprint 2 Auth Integration Map
 
+This document is retained as a historical implementation-planning artifact.
+It does not describe the current docs layout, and some "still needs" items in this file have since been completed.
+
 This file captures the current understanding of what still needs to be integrated into BookFlix to reach Sprint 2 authentication scope, using `xpostforecast/sprint2-login-backend` as the reference implementation.
 
 ## Summary

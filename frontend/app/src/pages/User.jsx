@@ -1,10 +1,9 @@
 import React from "react";
-import cam from '../assets/cam.png';
 import alaina from '../assets/alaina.png';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 
-function User() {
+function User({ authUser, onLogout }) {
   const navigate = useNavigate();
   return (
     <div className="page">
@@ -13,6 +12,10 @@ function User() {
           <img src={BookFlix_logo_cropped} alt="BookFlix Logo"
           style={{ width: '154px', height: '23px'}}></img>
         </button>
+        <div className="right-buttons">
+          <button className="temp-user-btn" onClick={() => navigate("/")}>Home</button>
+          <button className="login-btn" onClick={onLogout}>Logout</button>
+        </div>
       </div>
 
         <h1>User Profile Page</h1>
@@ -22,7 +25,7 @@ function User() {
                 <img src={alaina} alt="alaina"></img>
             </div>
 
-            <div className="username">Username</div>
+            <div className="username">{authUser?.username ?? "Unknown user"}</div>
 
             <div className="bio">
               <div style={{ color: 'var(--medium-purple)' }}>Bio</div>
@@ -35,7 +38,9 @@ function User() {
 
             <div className="favorites">Favorite Series</div>
 
-            <div className="latest">Latest Updates</div>
+            <div className="latest">
+              Logged in as {authUser?.username ?? "Unknown user"}
+            </div>
         </div>
 
     </div>
