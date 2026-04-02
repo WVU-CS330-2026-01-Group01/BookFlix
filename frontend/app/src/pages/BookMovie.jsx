@@ -93,31 +93,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
 
       {/* Main content wrapper */}
       <div style={{ color: 'white', padding: '30px' }}>
-        <div className="pair-score-panel">
-          <div>
-            <div className="pair-score-label">Pair score</div>
-            <div className="pair-score-value">{score}</div>
-          </div>
-          <div className="pair-vote-actions">
-            <button
-              className="pair-vote-button"
-              type="button"
-              onClick={() => handleVote("up")}
-              disabled={isVoting}
-            >
-              Like pair
-            </button>
-            <button
-              className="pair-vote-button pair-vote-button-negative"
-              type="button"
-              onClick={() => handleVote("down")}
-              disabled={isVoting}
-            >
-              Dislike pair
-            </button>
-          </div>
-        </div>
-        {voteError ? <p className="pair-vote-error">{voteError}</p> : null}
+
 
         <div style={{
           display: 'flex',
@@ -215,6 +191,30 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           Add comment...
         </div>
       </div>
+      <div className="pair-score-panel">
+        <div className="pair-score-label"> Is this Pair Correct?
+          <div className="pair-vote-actions">
+            <button
+              className="pair-vote-button"
+              type="button"
+              onClick={() => handleVote("up")}
+              disabled={isVoting}
+            >
+              ⇧
+            </button>
+             <div className="pair-score-value">{score}</div>
+            <button
+              className="pair-vote-button pair-vote-button-negative"
+              type="button"
+              onClick={() => handleVote("down")}
+              disabled={isVoting}
+            >
+              ⇩
+            </button>
+          </div>
+        </div>
+        </div>
+        {voteError ? <p className="pair-vote-error">{voteError}</p> : null}
     </div>
   </div>
 

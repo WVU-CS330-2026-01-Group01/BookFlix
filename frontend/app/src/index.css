@@ -508,12 +508,13 @@ h1 {
 }
 
 .pair-score-panel {
-  width: min(80%, 1100px);
+  width: min(80%, 400px);
   margin: 0 auto 24px;
   padding: 18px 22px;
   display: flex;
-  justify-content: space-between;
+  justify-content: column;
   align-items: center;
+  flex-direction: center;
   gap: 20px;
   background: rgba(20, 10, 35, 0.9);
   border: 1px solid var(--medium-purple);
@@ -528,32 +529,50 @@ h1 {
 }
 
 .pair-score-value {
-  margin-top: 4px;
+  margin-top: 18px;
   font-size: 32px;
   font-weight: bold;
   color: white;
+  text-align: center;
+}
+
+.pair-score-panel {
+  width: 80%;
+  max-width: 200px;
+  margin: 0 auto 24px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.pair-score-value {
+  text-align: center;
 }
 
 .pair-vote-actions {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: center;
+  gap: 16px;
 }
 
 .pair-vote-button {
-  background: var(--medium-purple);
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 999px;
+  background: transparent;
+  color: #9ca3af;
+  border: 2px solid transparent;
+  padding: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 50px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pair-vote-button:hover:not(:disabled) {
-  background: var(--light-purple);
+  color: #16a34a;
 }
 
 .pair-vote-button:disabled {
@@ -561,12 +580,8 @@ h1 {
   cursor: wait;
 }
 
-.pair-vote-button-negative {
-  background: #7c4269;
-}
-
 .pair-vote-button-negative:hover:not(:disabled) {
-  background: #9a5581;
+  color: #dc2626;
 }
 
 .pair-vote-error {
@@ -577,14 +592,14 @@ h1 {
 
 @media (max-width: 768px) {
   .pair-score-panel {
-    width: calc(100% - 32px);
+    width: 190px;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .pair-vote-actions {
     width: 100%;
-    justify-content: flex-start;
+    justify-content: center;
   }
 }
 
