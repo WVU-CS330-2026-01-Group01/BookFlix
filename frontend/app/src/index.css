@@ -463,6 +463,11 @@ h1 {
 
 .bio-text {
   min-height: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
   padding: 10px;
   color: var(--medium-purple);
   background-color: rgba(255,255,255,0.1);

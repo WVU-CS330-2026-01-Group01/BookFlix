@@ -130,11 +130,21 @@ function BookMovie() {
         </div>
 
 
-      {/*comments section*/}
-      <div className="bio" style={{width: '80%', margin: '20px auto', padding: '20px', background: '#222', borderRadius: '10px'}}>
-                <div className="bio-title">Comments</div>
-                <div className="bio-text" contentEditable="true">Add comment...</div>
-      </div>
+      {/* <div className="bio" style={{width: '80%', margin: '20px auto', padding: '20px', background: '#222', borderRadius: '10px'}}> */}
+                {/* <div className="bio-title">Comments</div> */}
+                {/* <div className="bio-text" contentEditable="true">Add comment...</div> */}
+
+          <div className="bio">
+              <div style={{ color: 'var(--medium-purple)' }}>Comments</div>
+              <div className="bio-text" contentEditable suppressContentEditableWarning={true} onFocus={(e) => { 
+                if (e.currentTarget.innerText === "Add comment...") { e.currentTarget.innerText = "";}}}
+                onBlur={(e) => {
+                if (e.currentTarget.innerText.trim() === "") { e.currentTarget.innerText = "Add comment...";}}}>
+                Add comment...
+              </div>
+            </div>
+                
+      {/* </div> */}
     </div>
   </div>
 

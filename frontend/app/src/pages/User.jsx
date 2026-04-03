@@ -24,9 +24,19 @@ function User() {
 
             <div className="username">Username</div>
 
-            <div className="bio">
+            {/* <div className="bio">
                 <div style={{ color: 'var(--medium-purple)' }}>Bio</div>
                 <div className="bio-text" contentEditable="true">Click here to edit your bio</div>
+            </div> */}
+
+            <div className="bio">
+              <div style={{ color: 'var(--medium-purple)' }}>Bio</div>
+              <div className="bio-text" contentEditable suppressContentEditableWarning={true} onFocus={(e) => { 
+                if (e.currentTarget.innerText === "Click here to edit your bio") { e.currentTarget.innerText = "";}}}
+                onBlur={(e) => {
+                if (e.currentTarget.innerText.trim() === "") { e.currentTarget.innerText = "Click here to edit your bio";}}}>
+                Click here to edit your bio
+              </div>
             </div>
 
             <div className="favorites">Favorite Series</div>
