@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
+import create_pair_book_icon from '../assets/create_pair_book_icon.png';
+import create_pair_film_icon from '../assets/create_pair_film_icon.png';
 import { useNavigate } from 'react-router-dom';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
@@ -17,6 +19,8 @@ function Pair({ authUser, onLogout }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [isSearchingBook, setIsSearchingBook] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [movieContainerHeight, setMovieContainerHeight] = useState("400px");
+  const [bookContainerHeight, setBookContainerHeight] = useState("400px");
 
   // Movie search
   useEffect(() => {
@@ -100,6 +104,15 @@ function Pair({ authUser, onLogout }) {
     }
   };
 
+
+useEffect(() => {
+  setMovieContainerHeight(selectedMovie ? "450px" : "400px");
+}, [selectedMovie]);
+
+useEffect(() => {
+  setBookContainerHeight(selectedBook ? "450px" : "400px");
+}, [selectedBook]);
+
   return (
     <div className="page">
       <div className="navbar">
@@ -115,27 +128,69 @@ function Pair({ authUser, onLogout }) {
         </div>
       </div>
 
+
+
+
+
+
+
+
+
+      {/* MEAT */}
+
       <div>
-        <h1 style={{textAlign: 'center'}}>Create a Movie-Book Pair</h1>
+        <h1 style={{
+          textAlign: 'center', 
+          fontSize: '50px', 
+          padding: '0px',
+          marginBottom: '0px'
+          }}>
+            Create a New Movie/Book Pair
+        </h1>
       </div>
+
       <div className="pairContainer">
 
+
+
+
         {/* Movie search box */}
-        <div className="pairBox" style={{ position: 'relative', overflow: 'visible' }}>
+        <div className="pairBox" 
+          style={{ 
+            position: 'relative', 
+            overflow: 'visible',
+            width: '100%',
+            width: '700px',
+            height: movieContainerHeight
+            }}>
+
           <input
             className="pair-input"
+            style={{
+              margin: '30px'
+            }}
             type="text"
-            placeholder="Movie/Show Title..."
+            placeholder="Search for a title"
             value={movieQuery}
             onChange={(e) => { setMovieQuery(e.target.value); setSelectedMovie(null); }}
+            
           />
 
           {movieResults.length > 0 && !selectedMovie && (
             <ul style={{
-              position: 'absolute', top: '52px', left: '5%', right: '5%',
-              background: 'var(--dark-purple)', border: '1px solid var(--medium-purple)', borderRadius: '6px',
-              listStyle: 'none', margin: 0, padding: '4px 0', zIndex: 100,
-              maxHeight: '300px', overflowY: 'auto',
+              position: 'absolute', 
+              top: '74px', 
+              left: '5%', 
+              right: '5%',
+              background: 'var(--dark-purple)', 
+              border: '1px solid var(--medium-purple)', 
+              borderRadius: '6px',
+              listStyle: 'none', 
+              margin: 0, 
+              padding: '4px 0', 
+              zIndex: 100,
+              maxHeight: '300px', 
+              overflowY: 'auto',
             }}>
               {movieResults.map((movie) => (
                 <li key={movie.id} onClick={() => handleSelectMovie(movie)}
@@ -163,7 +218,10 @@ function Pair({ authUser, onLogout }) {
           {isSearchingMovie && <p style={{ color: '#aaa', fontSize: '12px', margin: '4px 0 0' }}>Searching...</p>}
 
           {selectedMovie && (
-            <div style={{ padding: '10px', textAlign: 'center', color: 'white' }}>
+            <div style={{ 
+              padding: '10px', 
+              textAlign: 'center', 
+              color: 'white' }}>
               {selectedMovie.poster_path && (
                 <img src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`}
                   alt={selectedMovie.title ?? selectedMovie.name}
@@ -175,26 +233,70 @@ function Pair({ authUser, onLogout }) {
               </p>
             </div>
           )}
+ 
+          {!selectedMovie && (
+            <>
+            <img src={create_pair_film_icon}
+            style={{
+              width: "150px", 
+              opacity: 0.5,
+              paddingTop: '20px'
+            }}
+            >
+            </img>
+            <p 
+              style={{opacity: 0.5}}
+            >
+              Movie/Show goes here...
+            </p>
+        </>
+        )}
         </div>
 
-        <h3 style={{fontSize: '50px', margin: '0 20px', color: 'var(--medium-purple)' }}>+</h3>
+        <h3 style={{
+          fontSize: '150px', 
+          margin: '0 20px', 
+          color: 'var(--medium-purple)',
+          marginLeft: '0px',
+          marginRight: '0px'
+          }}>
+            +
+        </h3>
+
+
+
 
         {/* Book search box */}
-        <div className="pairBox" style={{ position: 'relative', overflow: 'visible' }}>
+        <div className="pairBox" style={{ 
+          position: 'relative', 
+          overflow: 'visible',
+          width: '100%',
+          height: bookContainerHeight
+          }}>
           <input
             className="pair-input"
+            style={{margin: '30px'}}
             type="text"
-            placeholder="Book Title..."
+            placeholder="Search for a title"
             value={bookQuery}
             onChange={(e) => { setBookQuery(e.target.value); setSelectedBook(null); }}
           />
 
           {bookResults.length > 0 && !selectedBook && (
             <ul style={{
-              position: 'absolute', top: '52px', left: '5%', right: '5%',
-              background: 'var(--dark-purple)', border: '1px solid var(--medium-purple)', borderRadius: '6px',
-              listStyle: 'none', margin: 0, padding: '4px 0', zIndex: 100,
-              maxHeight: '300px', overflowY: 'auto',
+              position: 'absolute', 
+              top: '74px', 
+              left: '5%', 
+              right: '5%',
+              background: 'var(--dark-purple)', 
+              border: '1px solid var(--medium-purple)', 
+              borderRadius: '6px',
+              listStyle: 'none', 
+              margin: 0, 
+              padding: '4px 0', 
+              zIndex: 100,
+              maxHeight: '300px', 
+              overflowY: 'auto',
             }}>
               {bookResults.map((book) => (
                 <li key={book.id} onClick={() => handleSelectBook(book)}
@@ -204,7 +306,11 @@ function Pair({ authUser, onLogout }) {
                 >
                   {book.volumeInfo?.imageLinks?.smallThumbnail && (
                     <img src={book.volumeInfo.imageLinks.smallThumbnail} alt={book.volumeInfo.title}
-                      style={{ width: '36px', height: '54px', objectFit: 'cover', borderRadius: '3px' }} />
+                      style={{ 
+                        width: '36px', 
+                        height: '54px', 
+                        objectFit: 'cover', 
+                        borderRadius: '3px' }} />
                   )}
                   <span>
                     {book.volumeInfo?.title}
@@ -233,13 +339,37 @@ function Pair({ authUser, onLogout }) {
               </p>
             </div>
           )}
+
+        {!selectedBook && (
+          <>
+            <img src={create_pair_book_icon}
+              style={{
+                width: "150px", 
+                opacity: 0.5,
+                paddingTop: '20px'
+
+              }}>
+
+            </img>
+            <p 
+              style={{opacity: 0.5}}>Book goes here...
+            </p>
+          </>
+        )}
+        
+
         </div>
+        
+        
 
       </div>
 
       {/*make new movie book pair button*/}
       {selectedBook && selectedMovie && (
-        <button className ="add-pair-button" onClick={handleSavePair} >
+        <button 
+        className ="add-pair-button" 
+        onClick={handleSavePair} 
+        style={{marginTop: '0px'}}>
           Post Pair!
         </button>
       )}
