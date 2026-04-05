@@ -52,11 +52,9 @@ function Home({ authenticated, authUser, onLogout }) {
         <div className="home-toolbar">
           <div>
             <h1 className="home-toolbar-title">Discover Pairs</h1>
-            <p className="home-toolbar-subtitle">Browse movie and book matches or make a new one.</p>
+            <p className="home-toolbar-subtitle">Browse book and film pairs, or make a new one.</p>
           </div>
-          <button className="home-add-pair-button" onClick={() => navigate("/pair")}>
-            Create Pair
-          </button>
+          <button className="home-add-pair-button" onClick={() => navigate("/pair")}>Create Pair</button>
         </div>
 
         <div className="content-area">
