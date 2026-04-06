@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -13,50 +13,60 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const [score, setScore] = useState(pair?.score ?? 0);
   const [isVoting, setIsVoting] = useState(false);
   const [voteError, setVoteError] = useState("");
+  const [userVote, setUserVote] = useState(null); // null, 1 (upvote), or -1 (downvote)
+
+  useEffect(() => {
+  if (!pair?.id) return;
+
+  fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score`)
+    .then(r => r.json())
+    .then(data => {
+      setScore(data.score);
+      if (authUser?.username) setUserVote(data.userVote);
+    })
+    .catch(err => console.error("Failed to fetch score:", err));
+}, [pair?.id, authUser?.username]);
 
   const handleVote = async (direction) => {
-    if (!pair?.id || isVoting) {
+    if (isVoting) return;
+
+    if (!authenticated) {
+      alert("You must be logged in to vote.");
       return;
     }
 
-    const delta = direction === "up" ? 1 : -1;
+    const vote = direction === "up" ? 1 : -1;
     const previousScore = score;
+    const previousUserVote = userVote;
 
+    
+    // const voteDelta = vote === userVote ? -vote : vote - (userVote ?? 0);
     setIsVoting(true);
     setVoteError("");
-    setScore(previousScore + delta);
+    // setScore(previousScore + voteDelta);
+    // setUserVote(vote === userVote ? null : vote); // toggle off if same direction
 
     try {
       const response = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/vote`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ direction }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vote: vote === userVote ? 0 : vote, userId: authUser?.username }),
       });
 
       const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Failed to update vote.");
 
-      if (!response.ok) {
-        throw new Error(data.error ?? "Failed to update score.");
-      }
-
-      setScore(data.score ?? previousScore + delta);
+      setScore(data.score);
+      setUserVote(data.userVote); // null, 1, or -1
     } catch (error) {
+      // Roll back on failure
       setScore(previousScore);
+      setUserVote(previousUserVote);
       setVoteError(error.message);
     } finally {
       setIsVoting(false);
     }
   };
-
-  if (!pair) {
-    return (
-      <div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>
-        No pair selected. <button onClick={() => navigate("/")}>Go Home</button>
-      </div>
-    );
-  }
 
   return (
     // <div style={{ textAlign: 'center', marginTop: '50px' }}>

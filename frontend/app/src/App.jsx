@@ -24,7 +24,7 @@ function ProtectedRoute({ authenticated, checkingAuth, children }) {
   }, [authenticated, checkingAuth]);
 
   if (!authenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
