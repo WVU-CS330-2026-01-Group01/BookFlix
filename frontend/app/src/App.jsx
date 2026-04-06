@@ -14,6 +14,15 @@ function ProtectedRoute({ authenticated, checkingAuth, children }) {
     return <div className="page" style={{ color: "white", padding: "40px" }}>Checking session...</div>;
   }
 
+  var shown = false;
+
+  useEffect(() => {
+    if (!checkingAuth && !authenticated && !shown) {
+      alert("You must be logged in to access this page.");
+      shown = true;
+    }
+  }, [authenticated, checkingAuth]);
+
   if (!authenticated) {
     return <Navigate to="/login" replace />;
   }
