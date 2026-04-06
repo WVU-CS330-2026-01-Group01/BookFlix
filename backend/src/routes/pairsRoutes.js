@@ -108,47 +108,61 @@ function createPairsRouter(options = {}) {
       response.status(500).json({ error: error.message });
     }
   });
+  
+  router.post("/:pairKey/vote", async (req, res) => {
+    const { pairKey } = req.params;
+    const { userId, vote } = req.body;
 
-  router.post("/:id/vote", async (request, response) => {
     try {
-      const { id } = request.params;
-      const { direction } = request.body ?? {};
-
-      if (!id) {
-        return response.status(400).json({ error: "Pair id is required." });
+      if (vote === 0) {
+        await database().query(
+          `DELETE FROM pair_votes WHERE user_name = ? AND pair_id = ?`,
+          [userId, pairKey]
+        );
+      } else {
+        await database().query(
+          `INSERT INTO pair_votes (user_name, pair_id, vote) VALUES (?, ?, ?)
+          ON DUPLICATE KEY UPDATE vote = VALUES(vote)`,
+          [userId, pairKey, vote]
+        );
       }
 
-      if (direction !== "up" && direction !== "down") {
-        return response.status(400).json({ error: "Vote direction must be 'up' or 'down'." });
-      }
-
-      const amount = direction === "up" ? 1 : -1;
-      const [updateResult] = await database().execute(
-        `UPDATE pair_data.movie_book_pairs
-         SET score = score + ?
-         WHERE id = ?`,
-        [amount, id],
+      const [[{ score }]] = await database().query(
+        `SELECT COALESCE(SUM(vote), 0) AS score FROM pair_votes WHERE pair_id = ?`,
+        [pairKey]
       );
 
-      if (updateResult.affectedRows === 0) {
-        return response.status(404).json({ error: "Pair not found." });
-      }
-
-      const [rows] = await database().execute(
-        `SELECT score
-         FROM pair_data.movie_book_pairs
-         WHERE id = ?`,
-        [id],
+      const [[userRow]] = await database().query(
+        `SELECT vote FROM pair_votes WHERE user_name = ? AND pair_id = ?`,
+        [userId, pairKey]
       );
 
-      return response.json({
-        ok: true,
-        id,
-        score: rows[0]?.score ?? null,
-      });
+      res.json({ ok: true, score, userVote: userRow?.vote ?? null });
     } catch (error) {
-      console.error("DB error:", error);
-      return response.status(500).json({ error: error.message });
+      console.error("Vote error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.get("/:pairKey/score", async (req, res) => {
+    const { pairKey } = req.params;
+    const { userId } = req.query;
+
+    try {
+      const [[{ score }]] = await database().query(
+        `SELECT COALESCE(SUM(vote), 0) AS score FROM pair_votes WHERE pair_id = ?`,
+        [pairKey]
+      );
+
+      const [[userRow]] = await database().query(
+        `SELECT vote FROM pair_votes WHERE user_name = ? AND pair_id = ?`,
+        [userId ?? "", pairKey]
+      );
+
+      res.json({ ok: true, score, userVote: userRow?.vote ?? null });
+    } catch (error) {
+      console.error("Score fetch error:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 

@@ -70,7 +70,7 @@ function Home({ authenticated, authUser, onLogout }) {
                   />
                   <div className="card-info">
                     <p style={{ color: 'white', fontSize: '13px', margin: '2px 0', opacity: '1' }}>{pair.movie.title}</p>
-                    <p style={{ color: '#d3c7e6', fontSize: '12px', margin: '6px 0 0' }}>Score: {pair.score ?? 0}</p>
+                    {/* <p style={{ color: '#d3c7e6', fontSize: '12px', margin: '6px 0 0' }}>Score: {pair.score ?? 0}</p> */}
                   </div>
                   <img
                     src={pair.book.thumbnail}
