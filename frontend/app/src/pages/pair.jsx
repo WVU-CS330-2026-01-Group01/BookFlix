@@ -160,7 +160,6 @@ useEffect(() => {
             position: 'relative', 
             overflow: 'visible',
             width: '100%',
-            width: '700px',
             height: movieContainerHeight
             }}>
 

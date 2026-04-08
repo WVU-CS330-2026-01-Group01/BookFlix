@@ -1,5 +1,7 @@
 const express = require("express");
 const { getPool } = require("../config/database");
+const { authMiddleware } = require("../middleware/authMiddleware");
+const { request } = require("../app");
 
 function createUserRouter() {
   const router = express.Router();
@@ -22,6 +24,19 @@ function createUserRouter() {
         [username, email, password]
       );
       response.json({ ok: true, userId: result.insertId });
+    } catch (error) {
+      console.error("DB error:", error);
+      response.status(500).json({ error: error.message });
+    }
+  });
+
+  router.post("/pfp", authMiddleware, async (request, response) => {
+    try { 
+      await getPool().execute(
+        'UPDATE authdb.users SET pfp_index = ? WHERE username = ?',
+        [request.body.pfp_index, request.user.username]
+       );
+      response.json({ ok: true });
     } catch (error) {
       console.error("DB error:", error);
       response.status(500).json({ error: error.message });

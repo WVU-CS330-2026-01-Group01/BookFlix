@@ -115,7 +115,7 @@ function App() {
           path="/user"
           element={
             <ProtectedRoute authenticated={authenticated} checkingAuth={checkingAuth}>
-              <User authUser={authUser} onLogout={handleLogout} />
+              <User authUser={authUser} onLogout={handleLogout} setAuthUser={setAuthUser} />
             </ProtectedRoute>
           }
         />

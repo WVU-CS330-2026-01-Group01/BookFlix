@@ -1,10 +1,37 @@
-import React from "react";
-import alaina from '../assets/alaina.png';
+import React, { useState } from "react";
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 
-function User({ authUser, onLogout }) {
+const baseUrl = "http://localhost:3000";
+const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
+const profilePicSources = Object.values(pics).map(pic => pic.default);
+
+
+
+function User({ authUser, onLogout, setAuthUser }) {
   const navigate = useNavigate();
+  const [pfp_index, setPfpIndex] = useState(authUser?.pfp_index ?? 0);
+  console.log("authUser:", authUser);
+
+  const handleCyclePfp = async () => {
+    const nextIndex = (pfp_index + 1) % profilePicSources.length;
+    setPfpIndex(nextIndex);
+
+    try {
+      await fetch(`${baseUrl}/api/users/pfp`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ pfp_index: nextIndex }),
+      });
+      setAuthUser(prev => ({ ...prev, pfp_index: nextIndex }));
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+    }
+  };
+
   return (
     <div className="page">
       <div className="navbar">
@@ -22,8 +49,11 @@ function User({ authUser, onLogout }) {
         
         <div className="user-grid">
             <div className="profile-pic"> 
-                <img src={alaina} alt="alaina"></img>
+                <img src={profilePicSources[pfp_index]} alt="Profile"></img>
             </div>
+            <button onClick={handleCyclePfp} className="cycle_pfp_btn">
+              Next Profile Picture
+            </button>
 
             <div className="username">{authUser?.username ?? "Unknown user"}</div>
 

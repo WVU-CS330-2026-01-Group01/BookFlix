@@ -442,9 +442,24 @@ h1 {
   object-fit: cover;
 }
 
-.username {
+.cycle_pfp_btn {
   grid-column: 1/2;
   grid-row: 2;
+  background: var(--medium-purple);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 50%;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.username {
+  grid-column: 1/2;
+  grid-row: 3;
   font-size: 20px;
   line-height: 1.1;
   color: white;
@@ -454,7 +469,7 @@ h1 {
 
 .bio {
   grid-column: 1/2;
-  grid-row: 3;
+  grid-row: 4;
   background-color: var(--dark-purple);
   padding: 15px;
   min-height: 242px;
