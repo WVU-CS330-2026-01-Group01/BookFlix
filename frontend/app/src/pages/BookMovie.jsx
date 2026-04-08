@@ -5,6 +5,8 @@ import { useLocation } from 'react-router-dom';
 import Rating from "../components/Rating";
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
+const profilePicSources = Object.values(pics).map(pic => pic.default);
 
 function BookMovie({ authenticated, authUser, onLogout }) {
   const navigate = useNavigate();
@@ -87,8 +89,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           <div className="right-buttons">
             {authenticated ? (
               <>
-                <button className="temp-user-btn" onClick={() => navigate("/user")}>
-                  {authUser?.username ?? "Profile"}
+                <button className="temp-user-btn" onClick={() => navigate("/user") } style={{ background: 'none'}}>
+                  <img src={profilePicSources[authUser?.pfp_index ?? 0]} alt="Profile" className="profile-pic" style={{ width: '40px', height: '40px', objectFit:'cover' }}></img>
                 </button>
                 <button className="login-btn" onClick={onLogout}>Logout</button>
               </>

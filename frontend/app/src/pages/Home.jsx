@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
+const profilePicSources = Object.values(pics).map(pic => pic.default);
 
 function Home({ authenticated, authUser, onLogout }) {
+  const [pfp_index] = useState(authUser?.pfp_index ?? 0);
   const navigate = useNavigate();
 
   const [pairs, setPairs] = useState([]);
@@ -40,8 +43,8 @@ function Home({ authenticated, authUser, onLogout }) {
         <div className="right-buttons">
           {authenticated ? (
             <>
-              <button className="temp-user-btn" onClick={() => navigate("/user")}>
-                {authUser?.username ?? "Profile"}
+              <button className="temp-user-btn" onClick={() => navigate("/user")} style={{ background: 'none'}}>
+                <img src={profilePicSources[pfp_index]} alt="Profile" className="profile-pic" style={{ width: '40px', height: '40px', objectFit:'cover' }}></img>
               </button>
               <button className="login-btn" onClick={onLogout}>Logout</button>
             </>
