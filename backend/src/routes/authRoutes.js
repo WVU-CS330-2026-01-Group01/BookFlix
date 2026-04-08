@@ -58,7 +58,7 @@ function createAuthRouter() {
 
     try {
       const [rows] = await getPool().execute(
-        "SELECT id, username, password_hash FROM users WHERE username = ? LIMIT 1",
+        "SELECT id, username, password_hash, pfp_index FROM users WHERE username = ? LIMIT 1",
         [username],
       );
 
@@ -87,6 +87,7 @@ function createAuthRouter() {
         user: {
           id: user.id,
           username: user.username,
+          pfp_index: user.pfp_index,
         },
       });
     } catch (error) {
@@ -101,6 +102,7 @@ function createAuthRouter() {
       user: {
         id: request.user.id,
         username: request.user.username,
+        pfp_index: request.user.pfp_index,
       },
     });
   });
