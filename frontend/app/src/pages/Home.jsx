@@ -10,12 +10,22 @@ function Home({ authenticated, authUser, onLogout }) {
 
   const [pairs, setPairs] = useState([]);
 
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     fetch(`${baseUrl}/api/pairs/all`)
       .then(r => r.json())
       .then(data => setPairs(data))
       .catch(err => console.error('Error fetching pairs:', err));
   }, []);
+
+    const filteredPairs = Object.entries(pairs).filter(([key, pair]) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      pair.movie.title.toLowerCase().includes(query) ||
+      pair.book.title.toLowerCase().includes(query)
+    );
+  });
 
   return (
     <div className="page">
@@ -46,7 +56,7 @@ function Home({ authenticated, authUser, onLogout }) {
 
       <div className="main">
         <div className="search-section">
-          <input type="text" placeholder="Search..." />
+          <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
         </div>
 
         <div className="home-toolbar">
@@ -61,7 +71,7 @@ function Home({ authenticated, authUser, onLogout }) {
           <div className="row">
             <h2>Trending</h2>
             <div className="card-row">
-              {Object.entries(pairs).map(([key, pair]) => (
+              {filteredPairs.map(([key, pair]) => (
                 <button className="card" onClick={() => navigate("/BookMovie", { state: { pair: { ...pair, id: pair.id ?? key } } })} key={key}>
                   <img
                     src={`https://image.tmdb.org/t/p/w500${pair.movie.poster_path}`}
