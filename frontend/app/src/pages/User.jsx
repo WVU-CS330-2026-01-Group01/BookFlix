@@ -11,7 +11,7 @@ const profilePicSources = Object.values(pics).map(pic => pic.default);
 function User({ authUser, onLogout, setAuthUser }) {
   const navigate = useNavigate();
   const [pfp_index, setPfpIndex] = useState(authUser?.pfp_index ?? 0);
-  console.log("authUser:", authUser);
+  console.log("authUser:", authUser, profilePicSources.length);
 
   const handleCyclePfp = async () => {
     const nextIndex = (pfp_index + 1) % profilePicSources.length;
@@ -40,7 +40,7 @@ function User({ authUser, onLogout, setAuthUser }) {
           style={{ width: '154px', height: '23px'}}></img>
         </button>
         <div className="right-buttons">
-          <button className="temp-user-btn" onClick={() => navigate("/")}>Home</button>
+          
           <button className="login-btn" onClick={onLogout}>Logout</button>
         </div>
       </div>

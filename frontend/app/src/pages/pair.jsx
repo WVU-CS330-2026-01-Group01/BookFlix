@@ -5,6 +5,8 @@ import create_pair_film_icon from '../assets/create_pair_film_icon.png';
 import { useNavigate } from 'react-router-dom';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
+const profilePicSources = Object.values(pics).map(pic => pic.default);
 
 function Pair({ authUser, onLogout }) {
   const navigate = useNavigate();
@@ -121,8 +123,8 @@ useEffect(() => {
           style={{ width: '154px', height: '23px'}}></img>
         </button>
         <div className="right-buttons">
-          <button className="temp-user-btn" onClick={() => navigate("/user")}>
-            {authUser?.username ?? "Profile"}
+          <button className="temp-user-btn" onClick={() => navigate("/user") } style={{ background: 'none'}}>
+            <img src={profilePicSources[authUser?.pfp_index ?? 0]} alt="Profile" className="profile-pic" style={{ width: '40px', height: '40px', objectFit:'cover' }}></img>
           </button>
           <button className="login-btn" onClick={onLogout}>Logout</button>
         </div>

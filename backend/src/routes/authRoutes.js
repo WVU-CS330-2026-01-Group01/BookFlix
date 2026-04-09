@@ -96,14 +96,15 @@ function createAuthRouter() {
     }
   });
 
-  router.get("/test", authMiddleware, (request, response) => {
+  router.get("/test", authMiddleware, async (request, response) => {
+    const [rows] = await getPool().execute(
+      "SELECT id, username, pfp_index FROM users WHERE id = ? LIMIT 1",
+      [request.user.id],
+    );
+    
     response.json({
       ok: true,
-      user: {
-        id: request.user.id,
-        username: request.user.username,
-        pfp_index: request.user.pfp_index,
-      },
+      user: rows[0] ?? null,
     });
   });
 
