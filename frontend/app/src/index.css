@@ -86,21 +86,50 @@ h1 {
   align-items: center;
   padding: 8px 15px;
   background-color: var(--dark-purple);
-  /* background-image: url(assets/tile.png);
-  background-size: 100px 85px;
-  background-color: rgba(20, 10, 35, 0.6);
-  background-blend-mode: multiply; */
   border-bottom:var(--medium-purple) solid 3px;
   border-radius: 0px 0px 10px 10px;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
 
   color: white;
   width: 100%;
   box-sizing: border-box;
 }
 
+/* Decorative glows stay behind the navbar content without affecting layout. */
+.navbar::before,
+.navbar::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.navbar::before {
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, var(--light-purple), transparent 70%);
+  top: -80px;
+  left: 10%;
+  animation: blob-nav-1 16s ease-in-out infinite;
+}
+
+.navbar::after {
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, var(--medium-purple), transparent 70%);
+  top: -100px;
+  right: 15%;
+  animation: blob-nav-2 20s ease-in-out infinite;
+}
+
 .navbar .logo {
   margin:0px;
-  background: var(--dark-purple);
+  background: none;
   color: white;
   border: none;
   border-radius: 3px;
@@ -305,6 +334,43 @@ h1 {
   gap: 20px;
   color: var(--medium-purple);
   font-size: 20px;
+  position: relative;
+}
+
+.content-area-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.content-area-glow::before,
+.content-area-glow::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.content-area-glow::before {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--light-purple), transparent 70%);
+  top: -100px;
+  left: -50px;
+  animation: blob-content-1 22s ease-in-out infinite;
+}
+
+.content-area-glow::after {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, var(--medium-purple), transparent 70%);
+  bottom: -80px;
+  right: -30px;
+  animation: blob-content-2 26s ease-in-out infinite;
 }
 
 
@@ -312,6 +378,8 @@ h1 {
 
 
 .row {
+  position: relative;
+  z-index: 1;
   width: 100%;
   padding: 15px 25px 15px 25px;
   border-radius: 10px;
@@ -639,4 +707,28 @@ h1 {
 
 .star-right {
   right: 0;
+}
+
+@keyframes blob-nav-1 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(60px, 10px); }
+  66% { transform: translate(-40px, -10px); }
+}
+
+@keyframes blob-nav-2 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-50px, 10px); }
+  66% { transform: translate(30px, -5px); }
+}
+
+@keyframes blob-content-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(80px, 40px) scale(1.1); }
+  66% { transform: translate(-60px, 20px) scale(0.9); }
+}
+
+@keyframes blob-content-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-70px, -30px) scale(1.05); }
+  66% { transform: translate(50px, -50px) scale(0.95); }
 }

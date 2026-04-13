@@ -71,6 +71,7 @@ function Home({ authenticated, authUser, onLogout }) {
         </div>
 
         <div className="content-area">
+          <div className="content-area-glow" aria-hidden="true" />
           <div className="row">
             <h2>Trending</h2>
             <div className="card-row">
