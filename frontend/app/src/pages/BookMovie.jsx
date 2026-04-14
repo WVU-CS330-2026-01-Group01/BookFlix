@@ -8,6 +8,7 @@ const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
 const profilePicSources = Object.values(pics).map(pic => pic.default);
 
+
 function BookMovie({ authenticated, authUser, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,48 +33,45 @@ function BookMovie({ authenticated, authUser, onLogout }) {
       .catch(err => console.error("Failed to fetch score:", err));
   }, [pair?.id, authUser?.username]);
 
-  
-
   const handleVote = async (direction) => {
-    if (isVoting) return;
+  if (isVoting) return;
 
-    if (!authenticated) {
-      alert("You must be logged in to vote.");
-      return;
-    }
+  if (!authenticated) {
+    alert("You must be logged in to vote.");
+    return;
+  }
 
-    const vote = direction === "up" ? 1 : -1;
-    const previousScore = score;
-    const previousUserVote = userVote;
+  const vote = direction === "up" ? 1 : -1;
 
-    
-    // const voteDelta = vote === userVote ? -vote : vote - (userVote ?? 0);
-    setIsVoting(true);
-    setVoteError("");
-    // setScore(previousScore + voteDelta);
-    // setUserVote(vote === userVote ? null : vote); // toggle off if same direction
+  const previousScore = score;
+  const previousUserVote = userVote;
 
-    try {
-      const response = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/vote`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vote: vote === userVote ? 0 : vote, userId: authUser?.username }),
-      });
+  setIsVoting(true);
+  setVoteError("");
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error ?? "Failed to update vote.");
+  try {
+    const response = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/vote`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        vote: vote === userVote ? 0 : vote,
+        userId: authUser?.username
+      }),
+    });
 
-      setScore(data.score);
-      setUserVote(data.userVote); // null, 1, or -1
-    } catch (error) {
-      // Roll back on failure
-      setScore(previousScore);
-      setUserVote(previousUserVote);
-      setVoteError(error.message);
-    } finally {
-      setIsVoting(false);
-    }
-  };
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error ?? "Failed to update vote.");
+
+    setScore(data.score);
+    setUserVote(data.userVote); // 👈 this is what controls the fill
+  } catch (error) {
+    setScore(previousScore);
+    setUserVote(previousUserVote);
+    setVoteError(error.message);
+  } finally {
+    setIsVoting(false);
+  }
+};
 
   useEffect(() => {
     if (!pair?.id) return;
@@ -282,25 +280,35 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           ))}
         </div>
       </div>
+
+      {/*pair vote*/}
       <div className="pair-score-panel">
         <div className="pair-score-label"> Is this Pair Correct?
           <div className="pair-vote-actions">
             <button
-              className="pair-vote-button"
+              className={`pair-vote-button ${userVote === 1 ? "selected-up" : ""}`}
               type="button"
               onClick={() => handleVote("up")}
               disabled={isVoting}
             >
-              ⇧
+              <svg viewBox="0 0 24 24" className="vote-icon">
+                <path d="M12 2l-7 8h4v12h6V10h4z" />
+              </svg>
             </button>
-             <div className="pair-score-value">{score}</div>
+
+            <div className="pair-score-value">{score}</div>
+
             <button
-              className="pair-vote-button pair-vote-button-negative"
+              className={`pair-vote-button pair-vote-button-negative ${
+               userVote === -1 ? "selected-down" : ""
+              }`}
               type="button"
               onClick={() => handleVote("down")}
               disabled={isVoting}
             >
-              ⇩
+              <svg viewBox="0 0 24 24" className="vote-icon">
+                  <path d="M12 22l7-8h-4V2h-6v12H5z" />
+              </svg>
             </button>
           </div>
         </div>
