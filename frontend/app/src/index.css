@@ -614,7 +614,7 @@ h1 {
 }
 
 .pair-score-value {
-  margin-top: 18px;
+  margin-top: 8px;
   font-size: 32px;
   font-weight: bold;
   color: white;
@@ -671,6 +671,33 @@ h1 {
     width: 100%;
     justify-content: center;
   }
+}
+
+.vote-icon {
+  width: 36px;
+  height: 36px;
+  fill: transparent;
+  stroke: #9ca3af;
+  stroke-width: 2;
+  transition: all 0.2s ease;
+}
+
+.selected-up .vote-icon {
+  fill: #16a34a;
+  stroke: #16a34a;
+}
+
+.selected-down .vote-icon {
+  fill: #dc2626;
+  stroke: #dc2626;
+}
+
+.pair-vote-button:hover:not(:disabled) .vote-icon {
+  stroke: #16a34a;
+}
+
+.pair-vote-button-negative:hover:not(:disabled) .vote-icon {
+  stroke: #dc2626;
 }
 
 .stars {
