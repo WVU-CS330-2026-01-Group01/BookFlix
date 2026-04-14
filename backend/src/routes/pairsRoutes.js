@@ -173,7 +173,7 @@ function createPairsRouter(options = {}) {
     
     try {
       const [rows] = await database().query(
-        'SELECT id, username, body, created_at FROM comments WHERE pair_id = ? ORDER BY created_at DESC',
+        'SELECT id, username, body, created_at FROM comments WHERE pair_id = ? ORDER BY created_at ASC',
         [pairKey]
       );
       res.json({ ok: true, comments: rows });
