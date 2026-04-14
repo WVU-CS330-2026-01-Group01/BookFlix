@@ -166,6 +166,52 @@ function createPairsRouter(options = {}) {
     }
   });
 
+  // get and post comments
+
+  router.get("/:pairKey/comments", async (req, res) => {
+    const { pairKey } = req.params;
+    
+    try {
+      const [rows] = await database().query(
+        'SELECT id, username, body, created_at FROM comments WHERE pair_id = ? ORDER BY created_at DESC',
+        [pairKey]
+      );
+      res.json({ ok: true, comments: rows });
+    } catch (error) {
+      console.error("Comments fetch error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.post("/:pairKey/comments", authMiddleware, async (req, res) => {
+    const { pairKey } = req.params;
+    const { body } = req.body;
+
+    if (!body.trim()) {
+      return res.status(400).json({ error: "Comment cannot be empty." });
+    }
+    
+    try {
+      const [result] = await database().query(
+        'INSERT INTO comments (pair_id, username, body) VALUES (?, ?, ?)',
+        [pairKey, req.user.username, body.trim()]
+      );
+      res.json({
+        ok: true,
+        comment: {
+          id: result.insertId,
+          username: req.user.username,
+          body: body.trim(),
+          created_at: new Date()
+        },
+      });
+    } catch (error) {
+      console.error("Comment post error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+
   return router;
 }
 

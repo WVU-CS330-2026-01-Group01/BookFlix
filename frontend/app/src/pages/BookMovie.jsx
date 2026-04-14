@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -16,18 +16,23 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const [isVoting, setIsVoting] = useState(false);
   const [voteError, setVoteError] = useState("");
   const [userVote, setUserVote] = useState(null); // null, 1 (upvote), or -1 (downvote)
+  const [comments, setComments] = useState([]);
+  const [commentBody, setCommentBody] = useState("");
+  const [commentError, setCommentError] = useState("");
 
   useEffect(() => {
-  if (!pair?.id) return;
+    if (!pair?.id) return;
 
-  fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score`)
-    .then(r => r.json())
-    .then(data => {
-      setScore(data.score);
-      if (authUser?.username) setUserVote(data.userVote);
-    })
-    .catch(err => console.error("Failed to fetch score:", err));
-}, [pair?.id, authUser?.username]);
+    fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score`)
+      .then(r => r.json())
+      .then(data => {
+        setScore(data.score);
+        if (authUser?.username) setUserVote(data.userVote);
+      })
+      .catch(err => console.error("Failed to fetch score:", err));
+  }, [pair?.id, authUser?.username]);
+
+  
 
   const handleVote = async (direction) => {
     if (isVoting) return;
@@ -70,11 +75,46 @@ function BookMovie({ authenticated, authUser, onLogout }) {
     }
   };
 
+  useEffect(() => {
+    if (!pair?.id) return;
+
+    fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/comments`)
+      .then(r => r.json())
+      .then(data => setComments(data.comments))
+      .catch(err => console.error("Failed to fetch comments:", err));
+  }, [pair?.id]);
+
+  const handlePostComment = async () => {
+    if (!authUser) {
+      alert("You must be logged in to comment.");
+      return;
+    }
+
+    if (commentBody.trim() === "") {
+      setCommentError("Comment cannot be empty.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/comments`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body: commentBody }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Failed to post comment.");
+
+      setComments(prev => [...prev, data.comment]);
+      setCommentBody("");
+      setCommentError("");
+    } catch (error) {
+      setCommentError(error.message);
+    }
+  };
+
   return (
-    // <div style={{ textAlign: 'center', marginTop: '50px' }}>
-    //   <h1>CS330 Project Baseline</h1>
-    //   <p>Your Vite + React app is running correctly!</p>
-    // </div>
+
 
 
     <div className="page">
@@ -195,12 +235,51 @@ function BookMovie({ authenticated, authUser, onLogout }) {
 
 
       {/*comments section*/}
-      <div className="bio" style={{width: '80%', margin: '20px auto', padding: '20px', background: '#222', borderRadius: '10px'}}>
-        <div className="bio-title">Comments</div>
-        <div className="bio-text" contentEditable suppressContentEditableWarning={true} onFocus={(e) => {
-          if (e.currentTarget.innerText === "Add comment...") { e.currentTarget.innerText = "";}}} 
-          onBlur={(e) => { if (e.currentTarget.innerText.trim() === "") {e.currentTarget.innerText = "Add comment...";}}}>
-          Add comment...
+      <div className="bio" style={{ width: '80%', margin: '20px auto', padding: '20px', background: '#222', borderRadius: '10px' }}>
+        <div style={{ color: 'var(--medium-purple)', marginBottom: '15px', fontWeight: 'bold' }}>Comments</div>
+
+        {/* new comment input */}
+        {commentError && <p style={{ color: '#ffb6c1', fontSize: '13px' }}>{commentError}</p>}
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+          <input
+            type="text"
+            placeholder={authUser ? "Add a comment..." : "Log in to comment"}
+            value={commentBody}
+            onChange={e => setCommentBody(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handlePostComment()}
+            disabled={!authUser}
+            style={{
+              flex: 1, padding: '10px', borderRadius: '6px',
+              border: '1px solid #444', background: '#111',
+              color: 'white', fontSize: '14px'
+            }}
+          />
+          <button
+            onClick={handlePostComment}
+            disabled={!authUser || !commentBody.trim()}
+            className="add-pair-button"
+            style={{ margin: 0 }}
+          >
+            Post
+          </button>
+        </div>
+
+        {/* existing comments */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+          {comments.length === 0 && (
+            <p style={{ color: '#aaa', fontSize: '14px' }}>No comments yet. Be the first!</p>
+          )}
+          {comments.map(comment => (
+            <div key={comment.id} style={{ background: '#333', borderRadius: '8px', padding: '10px 14px' }}>
+              <span style={{ color: 'var(--medium-purple)', fontWeight: 'bold', fontSize: '13px' }}>
+                {comment.username}
+              </span>
+              <span style={{ color: '#aaa', fontSize: '11px', marginLeft: '10px' }}>
+                {new Date(comment.created_at).toLocaleDateString()}
+              </span>
+              <p style={{ color: 'white', fontSize: '14px', margin: '6px 0 0' }}>{comment.body}</p>
+            </div>
+          ))}
         </div>
       </div>
       <div className="pair-score-panel">
