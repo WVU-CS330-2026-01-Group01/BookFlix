@@ -46,12 +46,36 @@ function Home({ authenticated, authUser, onLogout }) {
               <button className="temp-user-btn" onClick={() => navigate("/user")} style={{ background: 'none'}}>
                 <img src={profilePicSources[pfp_index]} alt="Profile" className="profile-pic" style={{ width: '40px', height: '40px', objectFit:'cover' }}></img>
               </button>
-              <button className="login-btn" onClick={onLogout}>Logout</button>
+              <button className="log-btn" onClick={onLogout}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Logout
+              </button>
             </>
           ) : (
             <>
-              <button className="temp-user-btn" onClick={() => navigate("/signup")}>Sign Up</button>
-              <button className="login-btn" onClick={() => navigate("/login")}>Login</button>
+              <button className="log-btn" onClick={() => navigate("/signup")}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="8.5" cy="7" r="4"/>
+                  <line x1="20" y1="8" x2="20" y2="14"/>
+                  <line x1="23" y1="11" x2="17" y2="11"/>
+                </svg>
+                Sign Up
+              </button>
+              <button className="log-btn" onClick={() => navigate("/login")}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Login
+              </button>
             </>
           )}
         </div>
@@ -64,17 +88,32 @@ function Home({ authenticated, authUser, onLogout }) {
 
         <div className="home-toolbar">
           <div>
-            <h1 className="home-toolbar-title">Discover Pairs</h1>
+            <h1 className="home-toolbar-title">Discover the perfect</h1>
+            <h1 className="home-toolbar-title">book & film pairs</h1>
             <p className="home-toolbar-subtitle">Browse book and film pairs, or make a new one.</p>
           </div>
-          <button className="home-add-pair-button" onClick={() => navigate("/pair")}>Create Pair</button>
         </div>
 
         <div className="content-area">
           <div className="content-area-glow" aria-hidden="true" />
           <div className="row">
-            <h2>Trending</h2>
-            <div className="card-row">
+            <div className="row-header">
+              <h2>Trending</h2>
+
+              <button
+                className="home-add-pair-button"
+                onClick={() => navigate("/pair")}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" strokeWidth="2"
+                  strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Create Pair
+              </button>
+            </div>
+              <div className="card-row">
               {filteredPairs.map(([key, pair]) => (
                 <button className="card" onClick={() => navigate("/BookMovie", { state: { pair: { ...pair, id: pair.id ?? key } } })} key={key}>
                   <img
