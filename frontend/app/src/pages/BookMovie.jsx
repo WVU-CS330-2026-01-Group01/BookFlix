@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -17,6 +17,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const [isVoting, setIsVoting] = useState(false);
   const [voteError, setVoteError] = useState("");
   const [userVote, setUserVote] = useState(null); // null, 1 (upvote), or -1 (downvote)
+  const [movieRating, setMovieRating] = useState(0);
+  const [bookRating, setBookRating] = useState(0);
   const [comments, setComments] = useState([]);
   const [commentBody, setCommentBody] = useState("");
   const [commentError, setCommentError] = useState("");
@@ -24,11 +26,17 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   useEffect(() => {
     if (!pair?.id) return;
 
-    fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score`)
+    const scoreUrl = `${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score` +
+      (authUser?.username ? `?userId=${encodeURIComponent(authUser.username)}` : "");
+    fetch(scoreUrl)
       .then(r => r.json())
       .then(data => {
         setScore(data.score);
-        if (authUser?.username) setUserVote(data.userVote);
+        if (authUser?.username) {
+          setUserVote(data.userVote);
+          setMovieRating(data.movieRating ?? 0);
+          setBookRating(data.bookRating ?? 0);
+        }
       })
       .catch(err => console.error("Failed to fetch score:", err));
   }, [pair?.id, authUser?.username]);
@@ -72,6 +80,27 @@ function BookMovie({ authenticated, authUser, onLogout }) {
     setIsVoting(false);
   }
 };
+
+  const handleRate = async (type, rating) => {
+    if (!authenticated) { alert("You must be logged in to rate."); return; }
+
+    if (type === "movie") setMovieRating(rating);
+    else setBookRating(rating);
+
+    try {
+      await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/rate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: authUser?.username,
+          movieRating: type === "movie" ? rating : movieRating,
+          bookRating: type === "book" ? rating : bookRating,
+        }),
+      });
+    } catch (err) {
+      console.error("Rating failed:", err);
+    }
+  };
 
   useEffect(() => {
     if (!pair?.id) return;
@@ -167,20 +196,21 @@ function BookMovie({ authenticated, authUser, onLogout }) {
                 alt={pair.movie.title}
                 style={{ height: '400px', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'block', margin: '0 auto' }}
               />
-              <h2 style={{ marginTop: '20px', textAlign: 'center' }}>{pair.movie.title}</h2>
-              <p style={{ color: '#aaa', textAlign: 'center' }}>{pair.movie.release_date?.slice(0, 4)}</p>
+              <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                <Rating value={movieRating} onChange={(r) => handleRate("movie", r)} />
+              </div>
+              <h2 style={{ marginTop: '20px', textAlign: 'left' }}>{pair.movie.title}</h2>
+              <p style={{ color: '#aaa', textAlign: 'left', fontSize: '14px', margin: '4px 0' }}>{pair.movie.release_date?.slice(0, 4)}</p>
               {pair.movie.genre?.length > 0 && (
-                <p style={{ color: '#ccc', textAlign: 'center', fontSize: '14px' }}>
-                  {pair.movie.genre.join(", ")}
-                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
+                  {(Array.isArray(pair.movie.genre) ? pair.movie.genre : []).map((g) => (
+                    <span key={g} style={{ background: 'rgba(154,112,214,0.2)', color: '#d3c7e6', padding: '3px 10px', borderRadius: '12px', fontSize: '12px' }}>{g}</span>
+                  ))}
+                </div>
               )}
               <p style={{ color: '#ddd', textAlign: 'left', fontSize: '14px', marginTop: '15px', lineHeight: '1.6' }}>
                 {pair.movie.overview}
               </p>
-            </div>
-            <div style={{ textAlign: 'center', marginTop: 'auto', paddingTop: '30px', width: '100%' }}>
-              <h3>Rate the Movie</h3>
-              <Rating />
             </div>
           </div>
 
@@ -207,20 +237,21 @@ function BookMovie({ authenticated, authUser, onLogout }) {
                 alt={pair.book.title}
                 style={{ height: '400px', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'block', margin: '0 auto' }}
               />
-              <h2 style={{ marginTop: '20px', textAlign: 'center' }}>{pair.book.title}</h2>
-              <p style={{ color: '#aaa', textAlign: 'center' }}>{pair.book.publishedDate?.slice(0, 4)}</p>
+              <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                <Rating value={bookRating} onChange={(r) => handleRate("book", r)} />
+              </div>
+              <h2 style={{ marginTop: '20px', textAlign: 'left' }}>{pair.book.title}</h2>
+              <p style={{ color: '#aaa', textAlign: 'left', fontSize: '14px', margin: '4px 0' }}>{pair.book.publishedDate?.slice(0, 4)}</p>
               {pair.book.categories?.length > 0 && (
-                <p style={{ color: '#ccc', textAlign: 'center', fontSize: '14px' }}>
-                  {pair.book.categories.join(", ")}
-                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
+                  {(Array.isArray(pair.book.categories) ? pair.book.categories : []).map((c) => (
+                    <span key={c} style={{ background: 'rgba(154,112,214,0.2)', color: '#d3c7e6', padding: '3px 10px', borderRadius: '12px', fontSize: '12px' }}>{c}</span>
+                  ))}
+                </div>
               )}
               <p style={{ color: '#ddd', textAlign: 'left', fontSize: '14px', marginTop: '15px', lineHeight: '1.6' }}>
                 {pair.book.description}
               </p>
-            </div>
-            <div style={{ textAlign: 'center', marginTop: 'auto', paddingTop: '30px', width: '100%' }}>
-              <h3>Rate the Book</h3>
-              <Rating />
             </div>
           </div>
         </div>

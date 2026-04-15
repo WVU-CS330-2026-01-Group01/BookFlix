@@ -116,24 +116,24 @@ function createPairsRouter(options = {}) {
     try {
       if (vote === 0) {
         await database().query(
-          `DELETE FROM pair_votes WHERE user_name = ? AND pair_id = ?`,
+          `DELETE FROM pair_data.pair_votes WHERE user_name = ? AND pair_id = ?`,
           [userId, pairKey]
         );
       } else {
         await database().query(
-          `INSERT INTO pair_votes (user_name, pair_id, vote) VALUES (?, ?, ?)
+          `INSERT INTO pair_data.pair_votes (user_name, pair_id, vote) VALUES (?, ?, ?)
           ON DUPLICATE KEY UPDATE vote = VALUES(vote)`,
           [userId, pairKey, vote]
         );
       }
 
       const [[{ score }]] = await database().query(
-        `SELECT COALESCE(SUM(vote), 0) AS score FROM pair_votes WHERE pair_id = ?`,
+        `SELECT COALESCE(SUM(vote), 0) AS score FROM pair_data.pair_votes WHERE pair_id = ?`,
         [pairKey]
       );
 
       const [[userRow]] = await database().query(
-        `SELECT vote FROM pair_votes WHERE user_name = ? AND pair_id = ?`,
+        `SELECT vote FROM pair_data.pair_votes WHERE user_name = ? AND pair_id = ?`,
         [userId, pairKey]
       );
 
@@ -150,18 +150,47 @@ function createPairsRouter(options = {}) {
 
     try {
       const [[{ score }]] = await database().query(
-        `SELECT COALESCE(SUM(vote), 0) AS score FROM pair_votes WHERE pair_id = ?`,
+        `SELECT COALESCE(SUM(vote), 0) AS score FROM pair_data.pair_votes WHERE pair_id = ?`,
         [pairKey]
       );
 
       const [[userRow]] = await database().query(
-        `SELECT vote FROM pair_votes WHERE user_name = ? AND pair_id = ?`,
+        `SELECT vote, book_rating, movie_rating FROM pair_data.pair_votes WHERE user_name = ? AND pair_id = ?`,
         [userId ?? "", pairKey]
       );
 
-      res.json({ ok: true, score, userVote: userRow?.vote ?? null });
+      res.json({
+        ok: true,
+        score,
+        userVote: userRow?.vote ?? null,
+        bookRating: userRow?.book_rating ?? 0,
+        movieRating: userRow?.movie_rating ?? 0,
+      });
     } catch (error) {
       console.error("Score fetch error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.post("/:pairKey/rate", async (req, res) => {
+    const { pairKey } = req.params;
+    const { userId, bookRating, movieRating } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required." });
+    }
+
+    try {
+      await database().query(
+        `INSERT INTO pair_data.pair_votes (user_name, pair_id, vote, book_rating, movie_rating)
+         VALUES (?, ?, 0, ?, ?)
+         ON DUPLICATE KEY UPDATE book_rating = VALUES(book_rating), movie_rating = VALUES(movie_rating)`,
+        [userId, pairKey, bookRating ?? 0, movieRating ?? 0]
+      );
+
+      res.json({ ok: true });
+    } catch (error) {
+      console.error("Rate error:", error);
       res.status(500).json({ error: error.message });
     }
   });
@@ -173,7 +202,7 @@ function createPairsRouter(options = {}) {
     
     try {
       const [rows] = await database().query(
-        'SELECT id, username, body, created_at FROM comments WHERE pair_id = ? ORDER BY created_at ASC',
+        'SELECT id, username, body, created_at FROM pair_data.comments WHERE pair_id = ? ORDER BY created_at ASC',
         [pairKey]
       );
       res.json({ ok: true, comments: rows });
@@ -193,7 +222,7 @@ function createPairsRouter(options = {}) {
     
     try {
       const [result] = await database().query(
-        'INSERT INTO comments (pair_id, username, body) VALUES (?, ?, ?)',
+        'INSERT INTO pair_data.comments (pair_id, username, body) VALUES (?, ?, ?)',
         [pairKey, req.user.username, body.trim()]
       );
       res.json({

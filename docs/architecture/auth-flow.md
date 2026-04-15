@@ -69,6 +69,16 @@ Pair attribution stored in `pair_data.movie_book_pairs`:
 
 - `user`
 
+User votes and ratings stored in `pair_data.pair_votes`:
+
+- `user_name`, `pair_id` (composite key — one row per user per pair)
+- `vote` (1 upvote, -1 downvote, 0 none)
+- `book_rating`, `movie_rating` (half-star increments, 0–5)
+
+User comments stored in `pair_data.comments`:
+
+- `pair_id`, `username`, `body`, `created_at`
+
 ## Deployment Notes
 
 - Set a real `JWT_SECRET` outside local development.
