@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
+import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped_bg_removed.png';
 import { useNavigate } from 'react-router-dom';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
