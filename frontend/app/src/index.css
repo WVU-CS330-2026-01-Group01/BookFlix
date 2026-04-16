@@ -161,7 +161,7 @@ h1 {
   padding: 8px 12px;
   background: var(--medium-purple);
   color: white;
-  border: 2px solid var(--dark-purple);
+  border: none;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
