@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
+import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped_bg_removed.png';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Rating from "../components/Rating";
