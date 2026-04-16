@@ -159,12 +159,21 @@ function createPairsRouter(options = {}) {
         [userId ?? "", pairKey]
       );
 
+      // Average ratings across all users (ignoring zeros/unrated)
+      const [[avgRow]] = await database().query(
+        `SELECT AVG(NULLIF(book_rating, 0)) AS avgBook, AVG(NULLIF(movie_rating, 0)) AS avgMovie
+         FROM pair_data.pair_votes WHERE pair_id = ?`,
+        [pairKey]
+      );
+
       res.json({
         ok: true,
         score,
         userVote: userRow?.vote ?? null,
         bookRating: userRow?.book_rating ?? 0,
         movieRating: userRow?.movie_rating ?? 0,
+        avgBookRating: avgRow?.avgBook ? parseFloat(Number(avgRow.avgBook).toFixed(1)) : null,
+        avgMovieRating: avgRow?.avgMovie ? parseFloat(Number(avgRow.avgMovie).toFixed(1)) : null,
       });
     } catch (error) {
       console.error("Score fetch error:", error);
@@ -188,21 +197,31 @@ function createPairsRouter(options = {}) {
         [userId, pairKey, bookRating ?? 0, movieRating ?? 0]
       );
 
-      res.json({ ok: true });
+      const [[avgRow]] = await database().query(
+        `SELECT AVG(NULLIF(book_rating, 0)) AS avgBook, AVG(NULLIF(movie_rating, 0)) AS avgMovie
+         FROM pair_data.pair_votes WHERE pair_id = ?`,
+        [pairKey]
+      );
+
+      res.json({
+        ok: true,
+        avgBookRating: avgRow?.avgBook ? parseFloat(Number(avgRow.avgBook).toFixed(1)) : null,
+        avgMovieRating: avgRow?.avgMovie ? parseFloat(Number(avgRow.avgMovie).toFixed(1)) : null,
+      });
     } catch (error) {
       console.error("Rate error:", error);
       res.status(500).json({ error: error.message });
     }
   });
 
-  // get and post comments
+  // comments: get, post, edit, delete
 
   router.get("/:pairKey/comments", async (req, res) => {
     const { pairKey } = req.params;
     
     try {
       const [rows] = await database().query(
-        'SELECT id, username, body, created_at FROM pair_data.comments WHERE pair_id = ? ORDER BY created_at ASC',
+        'SELECT id, username, body, created_at FROM pair_data.comments WHERE pair_id = ? ORDER BY created_at DESC',
         [pairKey]
       );
       res.json({ ok: true, comments: rows });
@@ -240,6 +259,47 @@ function createPairsRouter(options = {}) {
     }
   });
 
+  // edit and delete enforce ownership: only the comment author can modify
+  router.put("/:pairKey/comments/:commentId", authMiddleware, async (req, res) => {
+    const { commentId } = req.params;
+    const { body } = req.body;
+
+    if (!body?.trim()) {
+      return res.status(400).json({ error: "Comment cannot be empty." });
+    }
+
+    try {
+      const [result] = await database().query(
+        'UPDATE pair_data.comments SET body = ? WHERE id = ? AND username = ?',
+        [body.trim(), commentId, req.user.username]
+      );
+      if (result.affectedRows === 0) {
+        return res.status(403).json({ error: "You can only edit your own comments." });
+      }
+      res.json({ ok: true });
+    } catch (error) {
+      console.error("Comment edit error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.delete("/:pairKey/comments/:commentId", authMiddleware, async (req, res) => {
+    const { commentId } = req.params;
+
+    try {
+      const [result] = await database().query(
+        'DELETE FROM pair_data.comments WHERE id = ? AND username = ?',
+        [commentId, req.user.username]
+      );
+      if (result.affectedRows === 0) {
+        return res.status(403).json({ error: "You can only delete your own comments." });
+      }
+      res.json({ ok: true });
+    } catch (error) {
+      console.error("Comment delete error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   return router;
 }

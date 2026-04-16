@@ -22,6 +22,11 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const [comments, setComments] = useState([]);
   const [commentBody, setCommentBody] = useState("");
   const [commentError, setCommentError] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editBody, setEditBody] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [avgMovieRating, setAvgMovieRating] = useState(null);
+  const [avgBookRating, setAvgBookRating] = useState(null);
 
   useEffect(() => {
     if (!pair?.id) return;
@@ -32,6 +37,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
       .then(r => r.json())
       .then(data => {
         setScore(data.score);
+        setAvgMovieRating(data.avgMovieRating);
+        setAvgBookRating(data.avgBookRating);
         if (authUser?.username) {
           setUserVote(data.userVote);
           setMovieRating(data.movieRating ?? 0);
@@ -88,7 +95,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
     else setBookRating(rating);
 
     try {
-      await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/rate`, {
+      const res = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/rate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -97,6 +104,9 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           bookRating: type === "book" ? rating : bookRating,
         }),
       });
+      const data = await res.json();
+      setAvgMovieRating(data.avgMovieRating);
+      setAvgBookRating(data.avgBookRating);
     } catch (err) {
       console.error("Rating failed:", err);
     }
@@ -132,11 +142,42 @@ function BookMovie({ authenticated, authUser, onLogout }) {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Failed to post comment.");
 
-      setComments(prev => [...prev, data.comment]);
+      setComments(prev => [data.comment, ...prev]);
       setCommentBody("");
       setCommentError("");
     } catch (error) {
       setCommentError(error.message);
+    }
+  };
+
+  const handleEditComment = async (commentId) => {
+    if (!editBody.trim()) return;
+    try {
+      const res = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/comments/${commentId}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body: editBody }),
+      });
+      if (!res.ok) throw new Error("Failed to edit comment.");
+      setComments(prev => prev.map(c => c.id === commentId ? { ...c, body: editBody.trim() } : c));
+      setEditingId(null);
+      setEditBody("");
+    } catch (err) {
+      console.error("Edit failed:", err);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const res = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/comments/${commentId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to delete comment.");
+      setComments(prev => prev.filter(c => c.id !== commentId));
+    } catch (err) {
+      console.error("Delete failed:", err);
     }
   };
 
@@ -222,6 +263,11 @@ function BookMovie({ authenticated, authUser, onLogout }) {
               />
               <div style={{ textAlign: 'center', marginTop: '10px' }}>
                 <Rating value={movieRating} onChange={(r) => handleRate("movie", r)} />
+                {avgMovieRating != null && (
+                  <p style={{ color: '#aaa', fontSize: '13px', margin: '4px 0 0' }}>
+                    Avg: {avgMovieRating} / 5
+                  </p>
+                )}
               </div>
               <h2 style={{ marginTop: '20px', textAlign: 'left' }}>{pair.movie.title}</h2>
               <p style={{ color: '#aaa', textAlign: 'left', fontSize: '14px', margin: '4px 0' }}>{pair.movie.release_date?.slice(0, 4)}</p>
@@ -263,6 +309,11 @@ function BookMovie({ authenticated, authUser, onLogout }) {
               />
               <div style={{ textAlign: 'center', marginTop: '10px' }}>
                 <Rating value={bookRating} onChange={(r) => handleRate("book", r)} />
+                {avgBookRating != null && (
+                  <p style={{ color: '#aaa', fontSize: '13px', margin: '4px 0 0' }}>
+                    Avg: {avgBookRating} / 5
+                  </p>
+                )}
               </div>
               <h2 style={{ marginTop: '20px', textAlign: 'left' }}>{pair.book.title}</h2>
               <p style={{ color: '#aaa', textAlign: 'left', fontSize: '14px', margin: '4px 0' }}>{pair.book.publishedDate?.slice(0, 4)}</p>
@@ -324,13 +375,64 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           )}
           {comments.map(comment => (
             <div key={comment.id} style={{ background: '#333', borderRadius: '8px', padding: '10px 14px' }}>
-              <span style={{ color: 'var(--medium-purple)', fontWeight: 'bold', fontSize: '13px' }}>
-                {comment.username}
-              </span>
-              <span style={{ color: '#aaa', fontSize: '11px', marginLeft: '10px' }}>
-                {new Date(comment.created_at).toLocaleDateString()}
-              </span>
-              <p style={{ color: 'white', fontSize: '14px', margin: '6px 0 0' }}>{comment.body}</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <span style={{ color: 'var(--medium-purple)', fontWeight: 'bold', fontSize: '13px' }}>
+                    {comment.username}
+                  </span>
+                  <span style={{ color: '#aaa', fontSize: '11px', marginLeft: '10px' }}>
+                    {new Date(comment.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                {authUser?.username === comment.username && editingId !== comment.id && (
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <button onClick={() => { setEditingId(comment.id); setEditBody(comment.body); }}
+                      className="log-btn" style={{ padding: '4px 8px', fontSize: '12px' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                    </button>
+                    <button onClick={() => {
+                        if (confirmDeleteId === comment.id) { handleDeleteComment(comment.id); setConfirmDeleteId(null); }
+                        else { setConfirmDeleteId(comment.id); setTimeout(() => setConfirmDeleteId(prev => prev === comment.id ? null : prev), 2000); }
+                      }}
+                      className="log-btn" style={{ padding: '4px 8px', fontSize: '12px', background: confirmDeleteId === comment.id ? '#dc2626' : undefined }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+              {editingId === comment.id ? (
+                <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
+                  <input
+                    type="text"
+                    value={editBody}
+                    onChange={e => setEditBody(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && handleEditComment(comment.id)}
+                    style={{
+                      flex: 1, padding: '8px', borderRadius: '6px',
+                      border: '1px solid #444', background: '#111',
+                      color: 'white', fontSize: '14px'
+                    }}
+                  />
+                  <button onClick={() => handleEditComment(comment.id)}
+                    className="add-pair-button" style={{ margin: 0, fontSize: '13px', padding: '6px 12px' }}>
+                    Save
+                  </button>
+                  <button onClick={() => { setEditingId(null); setEditBody(""); }}
+                    style={{ background: 'none', border: '1px solid #666', color: '#aaa', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '13px' }}>
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <p style={{ color: 'white', fontSize: '14px', margin: '6px 0 0' }}>{comment.body}</p>
+              )}
             </div>
           ))}
         </div>

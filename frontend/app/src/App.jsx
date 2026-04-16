@@ -10,18 +10,15 @@ import BookMovie from "./pages/BookMovie";
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
 function ProtectedRoute({ authenticated, checkingAuth, children }) {
+  useEffect(() => {
+    if (!checkingAuth && !authenticated) {
+      alert("You must be logged in to access this page.");
+    }
+  }, [authenticated, checkingAuth]);
+
   if (checkingAuth) {
     return <div className="page" style={{ color: "white", padding: "40px" }}>Checking session...</div>;
   }
-
-  var shown = false;
-
-  useEffect(() => {
-    if (!checkingAuth && !authenticated && !shown) {
-      alert("You must be logged in to access this page.");
-      shown = true;
-    }
-  }, [authenticated, checkingAuth]);
 
   if (!authenticated) {
     return <Navigate to="/" replace />;
