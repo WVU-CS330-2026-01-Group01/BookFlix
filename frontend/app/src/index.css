@@ -63,7 +63,20 @@ h1 {
 }
 
 .home-add-pair-button {
+  display: flex;
+  align-items: center;   
+  justify-content: center; 
+  gap: 8px;              
+  padding: 8px 12px;
   background: var(--medium-purple);
+  color: white;
+  border: 2px solid var(--dark-purple);
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+  /*background: var(--medium-purple);
   color: white;
   border: none;
   padding: 12px 20px;
@@ -73,7 +86,8 @@ h1 {
   font-weight: bold;
   white-space: nowrap;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-}
+  */
+
 
 .home-add-pair-button:hover {
   background: var(--light-purple);
@@ -138,17 +152,36 @@ h1 {
 }
 
 
-.login-btn {
+
+.log-btn {
+  display: flex;
+  align-items: center;   /* vertical centering */
+  justify-content: center; /* horizontal centering */
+  gap: 8px;              /* space between icon and text */
+  padding: 8px 12px;
   background: var(--medium-purple);
   color: white;
   border: 2px solid var(--dark-purple);
-  padding: 10px 18px;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
-  font-size: 14px;
 }
 
-.navbar .login-btn:hover {
+.signup-btn {
+  display: flex;
+  align-items: center;   /* vertical centering */
+  justify-content: center; /* horizontal centering */
+  gap: 8px;              /* space between icon and text */
+  padding: 8px 12px;
+  background: var(--medium-purple);
+  color: white;
+  border: 2px solid var(--dark-purple);
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.navbar .log-btn:hover {
   background: var(--light-purple);
 }
 
@@ -166,8 +199,6 @@ h1 {
   border-radius: 6px;
   border: 1px solid #ccc;
 }
-
-
 
 .logBox {
   margin: 1px auto;
@@ -204,7 +235,7 @@ h1 {
   margin: 0 auto;
 }
 
-.logBars .login-btn {
+.login-btn {
   width: 20%;
   padding: 12px;
   font-size: 16px;
@@ -215,11 +246,33 @@ h1 {
   display: block;
   margin: 0 auto;
   font-weight: bold;
+  cursor: pointer;
+}
+
+.signBars .login-btn {
+  width: 20%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  background-color: var(--medium-purple);
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color:white;
+  display: block;
+  margin: 0 auto;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.signBars .login-btn:hover {
+  background-color: var(--light-purple);
 }
 
 .logBars .login-btn:hover {
   background-color: var(--light-purple);
 }
+
 
 .signup-text {
   margin-top: auto;
@@ -231,6 +284,7 @@ h1 {
   border: none;
   outline: none;
   box-shadow: none;
+  cursor: pointer;
 }
 
 .signBars {
@@ -251,17 +305,6 @@ h1 {
   margin: 0 auto;
 }
 
-.signBars .login-btn,
-.signBars .signup-btn {
-  width: 20%;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  display: block;
-  margin: 0 auto;
-  font-weight: bold;
-}
 
 .add-pair-button {
   display: block;
@@ -322,7 +365,7 @@ h1 {
 
 /* content area */
 .content-area {
-  margin: 60px auto;
+  margin: 20px auto;
   background-color: var(--dark-purple);
   border: 1px solid var(--medium-purple);
   border-radius: 20px;
@@ -386,10 +429,21 @@ h1 {
   box-sizing: border-box;
 }
 
+.row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.row-header h2 {
+  margin: 0;
+}
 
 .row h2 {
   color: var(--medium-purple);
   margin-bottom: 15px;
+  margin-top: 10px;
 }
 
 
@@ -480,6 +534,11 @@ h1 {
   align-items: center;
 }
 
+.right-buttons .temp-user-btn + .login-btn,
+.right-buttons .temp-user-btn + .log-btn {
+  margin-left: -4px;
+}
+
 .user-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -524,6 +583,10 @@ h1 {
   width: 50%;
   max-width: 200px;
   margin: 0 auto;
+}
+
+.cycle_pfp_btn:hover {
+  background: var(--light-purple);
 }
 
 .username {
