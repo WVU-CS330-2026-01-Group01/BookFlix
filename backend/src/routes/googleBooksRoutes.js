@@ -1,6 +1,7 @@
 const express = require("express");
 
 const { createGoogleBooksClient } = require("../services/googleBooksClient");
+const env = require("../config/env");
 
 function copyQueryWithout(query, ignoredKeys = []) {
   const ignored = new Set(ignoredKeys);
@@ -28,7 +29,7 @@ function sendRouteError(response, error) {
 function createGoogleBooksRouter(options = {}) {
   const router = express.Router();
   const googleBooks = options.googleBooks ?? createGoogleBooksClient({
-    apiKey: process.env.GOOGLE_BOOKS_API_KEY,
+    apiKey: env.googleBooksApiKey,
   });
   router.get("/", (request, response) => {
     response.json({

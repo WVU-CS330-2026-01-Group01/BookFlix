@@ -1,12 +1,15 @@
 const app = require("./app");
 const { closePool, getDatabaseStatus } = require("./config/database");
 const env = require("./config/env");
+const { seedIfEmpty } = require("./config/seed");
 
 async function startServer() {
   console.log(`Configured FRONTEND_ORIGIN=${env.frontendOrigin}`);
 
+  await seedIfEmpty();
+
   const database = await getDatabaseStatus();
-  console.log(`Successfully connected to MySQL ${database.database} at ${database.host}:${database.port}`);
+  console.log(`Using mock ${database.database} (remote MySQL is offline — demo mode).`);
 
   const server = app.listen(env.port, () => {
     console.log(`Backend server running at http://localhost:${env.port}`);
@@ -31,7 +34,7 @@ async function startServer() {
 }
 
 startServer().catch(async (error) => {
-  console.error("MySQL startup check failed:", error.message);
+  console.error("Startup failed:", error.message);
   await closePool().catch(() => {});
   process.exit(1);
 });
