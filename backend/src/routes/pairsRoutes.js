@@ -70,7 +70,14 @@ function createPairsRouter(options = {}) {
 
   router.get("/all", async (request, response) => {
     try {
-      const [rows] = await database().execute("SELECT * FROM pair_data.movie_book_pairs");
+      const [rows] = await database().execute(`
+        SELECT p.*,
+          COALESCE((SELECT SUM(vote) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS score,
+          COALESCE((SELECT COUNT(*) FROM pair_data.comments WHERE pair_id = p.id), 0) AS comment_count,
+          COALESCE((SELECT AVG(movie_rating) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS avg_movie_rating,
+          COALESCE((SELECT AVG(book_rating) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS avg_book_rating
+        FROM pair_data.movie_book_pairs p
+      `);
 
       // Reshape rows back into object format frontend expects
       const pairs = {};
@@ -79,6 +86,9 @@ function createPairsRouter(options = {}) {
           id: row.id,
           user: row.user,
           score: row.score,
+          commentcount: row.comment_count,
+          avg_movie_rating: row.avg_movie_rating,
+          avg_book_rating: row.avg_book_rating,
           movie: {
             id: row.movie_id,
             title: row.movie_title,
