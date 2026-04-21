@@ -822,3 +822,23 @@ h1 {
   33% { transform: translate(-70px, -30px) scale(1.05); }
   66% { transform: translate(50px, -50px) scale(0.95); }
 }
+
+.load-more-btn {
+  margin: 20px auto 0 auto;
+  display: flex;
+  align-items: center;   
+  justify-content: center; 
+  gap: 8px;              
+  padding: 8px 12px;
+  background: var(--medium-purple);
+  color: white;
+  border: 2px solid var(--dark-purple);
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.load-more-btn:hover {
+  background-color: var(--light-purple);
+}

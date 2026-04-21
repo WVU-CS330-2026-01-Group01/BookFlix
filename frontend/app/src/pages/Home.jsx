@@ -31,6 +31,7 @@ function Home({ authenticated, authUser, onLogout }) {
   const [pairs, setPairs] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(40);
 
   useEffect(() => {
     fetch(`${baseUrl}/api/pairs/all`)
@@ -133,7 +134,7 @@ function Home({ authenticated, authUser, onLogout }) {
               </button>
             </div>
               <div className="card-row">
-              {filteredPairs.map(([key, pair]) => (
+              {filteredPairs.slice(0, visibleCount).map(([key, pair]) => (
                 <button className="card" onClick={() => navigate("/BookMovie", { state: { pair: { ...pair, id: pair.id ?? key } } })} key={key}>
                   <img
                     src={`https://image.tmdb.org/t/p/w500${pair.movie.poster_path}`}
@@ -152,30 +153,15 @@ function Home({ authenticated, authUser, onLogout }) {
                 </button>
               ))}
             </div>
+            {visibleCount < filteredPairs.length && (
+              <button
+                className="load-more-btn"
+                onClick={() => setVisibleCount(visibleCount + 20)}
+              >
+                Load More
+              </button>
+            )}
           </div>
-
-          {/* <div className="row">
-            <h2>Recommendations</h2>
-            <div className="card-row">
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-            </div>
-          </div>
-
-
-          <div className="row">
-            <h2>Discover</h2>
-            <div className="card-row">
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
