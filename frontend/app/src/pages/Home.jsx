@@ -25,7 +25,7 @@ function rankPairs(pair) {
 }
 
 function Home({ authenticated, authUser, onLogout }) {
-  const [pfp_index] = useState(authUser?.pfp_index ?? 0);
+  const pfp_index = authUser?.pfp_index ?? 0;
   const navigate = useNavigate();
 
   const [pairs, setPairs] = useState([]);
