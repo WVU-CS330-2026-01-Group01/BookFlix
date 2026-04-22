@@ -5,6 +5,13 @@ import create_pair_film_icon from '../assets/create_pair_film_icon.png';
 import { useNavigate } from 'react-router-dom';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+const TMDB_GENRES = {
+  28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
+  80: "Crime", 99: "Documentary", 18: "Drama", 10751: "Family",
+  14: "Fantasy", 36: "History", 27: "Horror", 10402: "Music",
+  9648: "Mystery", 10749: "Romance", 878: "Sci-Fi", 53: "Thriller",
+  10752: "War", 37: "Western"
+};
 const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
 const profilePicSources = Object.values(pics).map(pic => pic.default);
 
@@ -65,13 +72,15 @@ function Pair({ authUser, onLogout }) {
   }, [bookQuery]);
 
   const handleSelectMovie = (movie) => {
-    setSelectedMovie(movie);
+    const genres = (movie.genre_ids ?? []).map(id => TMDB_GENRES[id]).filter(Boolean);
+    setSelectedMovie({ ...movie, genres }); // attach genres to the movie object
     setMovieQuery(movie.title ?? movie.name);
     setMovieResults([]);
-  };
+};
 
   const handleSelectBook = (book) => {
-    setSelectedBook(book);
+    const genres = book.volumeInfo?.categories ?? [];
+    setSelectedBook({ ...book, genres }); // attach genres to the book object
     setBookQuery(book.volumeInfo?.title ?? "");
     setBookResults([]);
   };
