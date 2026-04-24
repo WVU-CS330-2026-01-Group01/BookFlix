@@ -42,9 +42,13 @@ function Home({ authenticated, authUser, onLogout }) {
 
     const filteredPairs = Object.entries(pairs).filter(([key, pair]) => {
     const query = searchQuery.toLowerCase();
+    const movieGenres = (pair.movie.genre ?? []).join(' ').toLowerCase();
+    const bookGenres = (pair.book.categories ?? []).join(' ').toLowerCase();
     return (
       pair.movie.title.toLowerCase().includes(query) ||
-      pair.book.title.toLowerCase().includes(query)
+      pair.book.title.toLowerCase().includes(query) ||
+      movieGenres.includes(query) ||    
+      bookGenres.includes(query)         
     );
   })
   .sort(([, a], [, b]) => rankPairs(b) - rankPairs(a)); // sort pairs by rank
