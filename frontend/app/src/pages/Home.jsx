@@ -42,8 +42,8 @@ function Home({ authenticated, authUser, onLogout }) {
     //filters the pairs by genre and title
     const filteredPairs = Object.entries(pairs).filter(([key, pair]) => { 
       const query = searchQuery.toLowerCase();
-      const movieGenres = (pair.movie.genres ?? []).join(' ').toLowerCase();
-      const bookGenres = (pair.book.genres ?? []).join(' ').toLowerCase();
+      const movieGenres = (pair.movie.genre ?? []).join(' ').toLowerCase();
+      const bookGenres = (pair.book.categories ?? []).join(' ').toLowerCase();
       return (
         pair.movie.title.toLowerCase().includes(query) ||
         pair.book.title.toLowerCase().includes(query) ||
