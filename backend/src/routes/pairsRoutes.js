@@ -74,8 +74,8 @@ function createPairsRouter(options = {}) {
         SELECT p.*,
           COALESCE((SELECT SUM(vote) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS score,
           COALESCE((SELECT COUNT(*) FROM pair_data.comments WHERE pair_id = p.id), 0) AS comment_count,
-          COALESCE((SELECT AVG(movie_rating) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS avg_movie_rating,
-          COALESCE((SELECT AVG(book_rating) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS avg_book_rating
+          COALESCE((SELECT AVG(NULLIF(movie_rating, 0)) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS avg_movie_rating,
+          COALESCE((SELECT AVG(NULLIF(book_rating, 0)) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS avg_book_rating
         FROM pair_data.movie_book_pairs p
       `);
 
@@ -164,8 +164,10 @@ function createPairsRouter(options = {}) {
         [pairKey]
       );
 
+      
+
       const [[userRow]] = await database().query(
-        `SELECT vote, book_rating, movie_rating FROM pair_data.pair_votes WHERE user_name = ? AND pair_id = ?`,
+        `SELECT vote, book_rating, movie_rating, bookmarked FROM pair_data.pair_votes WHERE user_name = ? AND pair_id = ?`,
         [userId ?? "", pairKey]
       );
 
@@ -182,6 +184,7 @@ function createPairsRouter(options = {}) {
         userVote: userRow?.vote ?? null,
         bookRating: userRow?.book_rating ?? 0,
         movieRating: userRow?.movie_rating ?? 0,
+        bookmarked: userRow?.bookmarked ?? false,
         avgBookRating: avgRow?.avgBook ? parseFloat(Number(avgRow.avgBook).toFixed(1)) : null,
         avgMovieRating: avgRow?.avgMovie ? parseFloat(Number(avgRow.avgMovie).toFixed(1)) : null,
       });
@@ -307,6 +310,38 @@ function createPairsRouter(options = {}) {
       res.json({ ok: true });
     } catch (error) {
       console.error("Comment delete error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.post("/:pairKey/bookmark", authMiddleware, async (req, res) => {
+    const { pairKey } = req.params;
+
+    try {
+      const [result] = await database().query(
+        `INSERT INTO pair_data.pair_votes (user_name, pair_id, vote, bookmarked) 
+        VALUES (?, ?, 0, 1)
+        ON DUPLICATE KEY UPDATE bookmarked = VALUES(bookmarked)`,
+        [req.user.username, pairKey]
+      );
+      res.json({ ok: true, bookmarked: true });
+    } catch (error) {
+      console.error("Bookmark error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.delete("/:pairKey/bookmark", authMiddleware, async (req, res) => {
+    const { pairKey } = req.params;
+
+    try {
+      const [result] = await database().query(
+        `UPDATE pair_data.pair_votes SET bookmarked = 0 WHERE user_name = ? AND pair_id = ?`,
+        [req.user.username, pairKey]
+      );
+      res.json({ ok: true, bookmarked: false });
+    } catch (error) {
+      console.error("Bookmark remove error:", error);
       res.status(500).json({ error: error.message });
     }
   });
