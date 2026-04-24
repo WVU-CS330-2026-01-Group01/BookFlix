@@ -1,5 +1,5 @@
 import React from 'react';
-import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped.png';
+import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped_bg_removed.png';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
@@ -7,13 +7,31 @@ const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
 const profilePicSources = Object.values(pics).map(pic => pic.default);
 
+function rankPairs(pair) {
+  const score = Number(pair.score ?? 0);
+  const movieRating = Number(pair.avg_movie_rating ?? 0);
+  const bookRating = Number(pair.avg_book_rating ?? 0);
+  const commentCount = Number(pair.comment_count ?? 0);
+
+  // formula for ranking pairs - change weights later maybe?
+  let result = 0;
+  if (score < 0){
+    result -= Math.abs(score) * 10; // downvotes should decrease rank more than upvotes increase it
+  } 
+  result +=movieRating + bookRating + commentCount * 0.5;
+
+  console.log(`Ranking for movie: ${pair.movie.title}, inputs: score=${score}, movieRating=${movieRating}, bookRating=${bookRating}, commentCount=${commentCount}, result=${result}`);
+  return result;
+}
+
 function Home({ authenticated, authUser, onLogout }) {
-  const [pfp_index] = useState(authUser?.pfp_index ?? 0);
+  const pfp_index = authUser?.pfp_index ?? 0;
   const navigate = useNavigate();
 
   const [pairs, setPairs] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(40);
 
   useEffect(() => {
     fetch(`${baseUrl}/api/pairs/all`)
@@ -32,7 +50,9 @@ function Home({ authenticated, authUser, onLogout }) {
         movieGenres.includes(query) ||    
         bookGenres.includes(query) 
     );
-  });
+  })
+  .sort(([, a], [, b]) => rankPairs(b) - rankPairs(a)); // sort pairs by rank
+  
 
   return (
     <div className="page">
@@ -118,7 +138,7 @@ function Home({ authenticated, authUser, onLogout }) {
               </button>
             </div>
               <div className="card-row">
-              {filteredPairs.map(([key, pair]) => (
+              {filteredPairs.slice(0, visibleCount).map(([key, pair]) => (
                 <button className="card" onClick={() => navigate("/BookMovie", { state: { pair: { ...pair, id: pair.id ?? key } } })} key={key}>
                   <img
                     src={`https://image.tmdb.org/t/p/w500${pair.movie.poster_path}`}
@@ -137,30 +157,15 @@ function Home({ authenticated, authUser, onLogout }) {
                 </button>
               ))}
             </div>
+            {visibleCount < filteredPairs.length && (
+              <button
+                className="load-more-btn"
+                onClick={() => setVisibleCount(visibleCount + 20)}
+              >
+                Load More
+              </button>
+            )}
           </div>
-
-          {/* <div className="row">
-            <h2>Recommendations</h2>
-            <div className="card-row">
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-            </div>
-          </div>
-
-
-          <div className="row">
-            <h2>Discover</h2>
-            <div className="card-row">
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-              <div className="card">book/movie</div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
