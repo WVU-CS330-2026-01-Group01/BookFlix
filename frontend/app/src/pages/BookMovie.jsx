@@ -27,6 +27,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [avgMovieRating, setAvgMovieRating] = useState(null);
   const [avgBookRating, setAvgBookRating] = useState(null);
+  const [bookmarked, setBookmarked] = useState(false);
+  const [isBookmarking, setIsBookmarking] = useState(false);
 
   useEffect(() => {
     if (!pair?.id) return;
@@ -43,6 +45,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           setUserVote(data.userVote);
           setMovieRating(data.movieRating ?? 0);
           setBookRating(data.bookRating ?? 0);
+          setBookmarked(data.bookmarked ?? false);
         }
       })
       .catch(err => console.error("Failed to fetch score:", err));
@@ -181,6 +184,30 @@ function BookMovie({ authenticated, authUser, onLogout }) {
     }
   };
 
+  const handleBookmark = async () => {
+    if (!authUser) {
+      alert("You must be logged in to bookmark.");
+      return;
+    }
+    setIsBookmarking(true);
+    try {
+      const method = bookmarked ? "DELETE" : "POST";
+      const res = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/bookmark`, {
+        method,
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to update bookmark.");
+      setBookmarked(data.bookmarked);
+      console.log("Bookmark status updated:", data.bookmarked);
+    } catch (err) {
+      console.error("Bookmark failed:", err);
+    } finally {
+      setIsBookmarking(false); 
+    }
+  };
+  
+
   return (
 
 
@@ -234,6 +261,18 @@ function BookMovie({ authenticated, authUser, onLogout }) {
             )}
           </div>
       </div>
+
+      <div style={{
+         display: 'flex', justifyContent: 'flex-end', padding: '0 30px', margin: '10px' }}>
+        <button
+          onClick={handleBookmark}
+          disabled={isBookmarking}
+          className="log-btn"
+        >
+          {bookmarked ? "★ Bookmarked" : "☆ Bookmark"}
+        </button>
+      </div>
+
 
       {/* Main content wrapper */}
       <div style={{ color: 'white', padding: '30px' }}>
