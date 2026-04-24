@@ -39,12 +39,16 @@ function Home({ authenticated, authUser, onLogout }) {
       .then(data => setPairs(data))
       .catch(err => console.error('Error fetching pairs:', err));
   }, []);
-
-  const filteredPairs = Object.entries(pairs).filter(([key, pair]) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      pair.movie.title.toLowerCase().includes(query) ||
-      pair.book.title.toLowerCase().includes(query)
+    //filters the pairs by genre and title
+    const filteredPairs = Object.entries(pairs).filter(([key, pair]) => { 
+      const query = searchQuery.toLowerCase();
+      const movieGenres = (pair.movie.genres ?? []).join(' ').toLowerCase();
+      const bookGenres = (pair.book.genres ?? []).join(' ').toLowerCase();
+      return (
+        pair.movie.title.toLowerCase().includes(query) ||
+        pair.book.title.toLowerCase().includes(query) ||
+        movieGenres.includes(query) ||    
+        bookGenres.includes(query) 
     );
   })
   .sort(([, a], [, b]) => rankPairs(b) - rankPairs(a)); // sort pairs by rank
