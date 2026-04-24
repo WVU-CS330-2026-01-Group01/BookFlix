@@ -13,6 +13,7 @@ function User({ authUser, onLogout, setAuthUser }) {
   const [pfp_index, setPfpIndex] = useState(authUser?.pfp_index ?? 0);
   const [bio, setBio] = useState("");
   const bioRef = useRef(null);
+  const [bookmarks, setBookmarks] = useState([]);
 
   useEffect(() => {
     fetch(`${baseUrl}/api/users/bio`, { credentials: "include" })
@@ -22,6 +23,11 @@ function User({ authUser, onLogout, setAuthUser }) {
         if (bioRef.current) bioRef.current.innerText = data.bio || "Click here to edit your bio";
       })
       .catch(err => console.error("Failed to load bio:", err));
+
+    fetch(`${baseUrl}/api/users/bookmarks`, { credentials: "include" })
+      .then(r => r.json())
+      .then(data => setBookmarks(data.bookmarks ?? []))
+      .catch(err => console.error("Failed to load bookmarks:", err));
   }, []);
 
   const handleSaveBio = async (e) => {
@@ -102,11 +108,23 @@ function User({ authUser, onLogout, setAuthUser }) {
               </div>
             </div>
 
-            <div className="favorites">Favorite Series</div>
-
-            <div className="latest">
-              Logged in as {authUser?.username ?? "Unknown user"}
+            <div className="bookmarks">
+              <div style={{ color: 'var(--medium-purple)', marginBottom: '10px', fontWeight: 'bold' }}>Bookmarks</div>
+              {bookmarks.length === 0 && <p style={{ color: '#aaa', fontSize: '14px' }}>No bookmarks yet.</p>}
+              {bookmarks.map(pair => (
+                <button key={pair.id} className="card"
+                  onClick={() => navigate("/BookMovie", { state: { pair } })}
+                  style={{ width: '100%', height: '60px', marginBottom: '8px', justifyContent: 'flex-start' }}
+                >
+                  <img src={`https://image.tmdb.org/t/p/w92${pair.movie.poster_path}`}
+                    style={{ height: '60px', borderRadius: '4px 0 0 4px' }} />
+                  <span style={{ color: 'white', fontSize: '13px', padding: '0 10px' }}>
+                    {pair.movie.title} + {pair.book.title}
+                  </span>
+                </button>
+              ))}
             </div>
+
         </div>
 
     </div>
