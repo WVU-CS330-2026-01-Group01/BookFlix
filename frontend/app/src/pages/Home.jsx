@@ -39,18 +39,6 @@ function Home({ authenticated, authUser, onLogout }) {
       .then(data => setPairs(data))
       .catch(err => console.error('Error fetching pairs:', err));
   }, []);
-<<<<<<< HEAD
-    //filters the pairs by genre and title
-    const filteredPairs = Object.entries(pairs).filter(([key, pair]) => { 
-      const query = searchQuery.toLowerCase();
-      const movieGenres = (pair.movie.genre ?? []).join(' ').toLowerCase();
-      const bookGenres = (pair.book.categories ?? []).join(' ').toLowerCase();
-      return (
-        pair.movie.title.toLowerCase().includes(query) ||
-        pair.book.title.toLowerCase().includes(query) ||
-        movieGenres.includes(query) ||    
-        bookGenres.includes(query) 
-=======
 
     const filteredPairs = Object.entries(pairs).filter(([key, pair]) => {
     const query = searchQuery.toLowerCase();
@@ -61,7 +49,6 @@ function Home({ authenticated, authUser, onLogout }) {
       pair.book.title.toLowerCase().includes(query) ||
       movieGenres.includes(query) ||    
       bookGenres.includes(query)         
->>>>>>> feature/jaj00032-new
     );
   })
   .sort(([, a], [, b]) => rankPairs(b) - rankPairs(a)); // sort pairs by rank
