@@ -1,9 +1,13 @@
-name: Build and deploy Node.js app to Azure Web App - xPostForecast-api
+name: Build and deploy backend to Azure App Service
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-appservice.yml"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,24 +15,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
+          node-version: "22.x"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
 
-      - name: npm install, build, and test (backend only)
-        working-directory: sprint4-cloud-deployment/backend
-        run: |
-          npm install
-          npm run build --if-present
-          # Optional: comment out if you have no tests
-          # npm run test --if-present
+      - name: Install production dependencies
+        working-directory: backend
+        run: npm ci --omit=dev
 
-      - name: Upload backend artifact for deployment
+      - name: Upload backend artifact
         uses: actions/upload-artifact@v4
         with:
           name: backend-app
-          path: sprint4-cloud-deployment/backend
+          path: backend
+          include-hidden-files: false
 
   deploy:
     runs-on: ubuntu-latest
@@ -38,12 +41,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: backend-app
-          path: cs330-2026-group01/backend
+          path: backend
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: "202601-CS330-001-15266-Group01-backend"
           slot-name: "Production"
-          package: cs330-2026-group01/backend
+          package: backend
           publish-profile: ${{ secrets.APP_SERVICE_PUBLISH_PROFILE }}
