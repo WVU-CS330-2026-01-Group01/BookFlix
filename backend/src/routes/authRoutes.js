@@ -10,7 +10,7 @@ function getCookieOptions() {
   return {
     httpOnly: true,
     sameSite: env.authCookieSameSite,
-    secure: env.nodeEnv === "production",
+    secure: env.nodeEnv === "production" || env.authCookieSameSite === "none",
     maxAge: env.authCookieMaxAgeMs,
   };
 }
