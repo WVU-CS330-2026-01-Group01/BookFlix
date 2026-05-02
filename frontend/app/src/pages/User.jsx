@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped_bg_removed.png';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
@@ -10,25 +10,47 @@ const profilePicSources = Object.values(pics).map(pic => pic.default);
 
 function User({ authUser, onLogout, setAuthUser }) {
   const navigate = useNavigate();
-  const [pfp_index, setPfpIndex] = useState(authUser?.pfp_index ?? 0);
+  const { username: paramUsername } = useParams();
+  const isSelf = !paramUsername || paramUsername === authUser?.username;
+  const displayUsername = isSelf ? (authUser?.username ?? "Unknown user") : paramUsername;
+
+  const [otherPfpIndex, setOtherPfpIndex] = useState(0);
+  const pfp_index = isSelf ? (authUser?.pfp_index ?? 0) : otherPfpIndex;
   const [bio, setBio] = useState("");
   const bioRef = useRef(null);
   const [bookmarks, setBookmarks] = useState([]);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    fetch(`${baseUrl}/api/users/bio`, { credentials: "include" })
-      .then(r => r.json())
-      .then(data => {
-        setBio(data.bio ?? "");
-        if (bioRef.current) bioRef.current.innerText = data.bio || "Click here to edit your bio";
-      })
-      .catch(err => console.error("Failed to load bio:", err));
+    if (isSelf) {
+      fetch(`${baseUrl}/api/users/bio`, { credentials: "include" })
+        .then(r => r.json())
+        .then(data => {
+          setBio(data.bio ?? "");
+          if (bioRef.current) bioRef.current.innerText = data.bio || "Click here to edit your bio";
+        })
+        .catch(err => console.error("Failed to load bio:", err));
 
-    fetch(`${baseUrl}/api/users/bookmarks`, { credentials: "include" })
-      .then(r => r.json())
-      .then(data => setBookmarks(data.bookmarks ?? []))
-      .catch(err => console.error("Failed to load bookmarks:", err));
-  }, []);
+      fetch(`${baseUrl}/api/users/bookmarks`, { credentials: "include" })
+        .then(r => r.json())
+        .then(data => setBookmarks(data.bookmarks ?? []))
+        .catch(err => console.error("Failed to load bookmarks:", err));
+    } else {
+      fetch(`${baseUrl}/api/users/${encodeURIComponent(paramUsername)}/profile`, { credentials: "include" })
+        .then(async r => {
+          if (r.status === 404) { setNotFound(true); return null; }
+          setNotFound(false);
+          return r.json();
+        })
+        .then(data => {
+          if (!data) return;
+          setBio(data.bio ?? "");
+          setOtherPfpIndex(data.pfp_index ?? 0);
+          setBookmarks(data.bookmarks ?? []);
+        })
+        .catch(err => console.error("Failed to load profile:", err));
+    }
+  }, [isSelf, paramUsername]);
 
   const handleSaveBio = async (e) => {
     const newBio = e.currentTarget.innerText.trim();
@@ -50,7 +72,7 @@ function User({ authUser, onLogout, setAuthUser }) {
 
   const handleCyclePfp = async () => {
     const nextIndex = (pfp_index + 1) % profilePicSources.length;
-    setPfpIndex(nextIndex);
+    setAuthUser(prev => ({ ...prev, pfp_index: nextIndex }));
 
     try {
       await fetch(`${baseUrl}/api/users/pfp`, {
@@ -61,7 +83,6 @@ function User({ authUser, onLogout, setAuthUser }) {
         },
         body: JSON.stringify({ pfp_index: nextIndex }),
       });
-      setAuthUser(prev => ({ ...prev, pfp_index: nextIndex }));
     } catch (error) {
       console.error("Error updating profile picture:", error);
     }
@@ -87,25 +108,34 @@ function User({ authUser, onLogout, setAuthUser }) {
         </div>
       </div>
 
-        <h1>User Profile Page</h1>
-        
+        <h1>{isSelf ? "User Profile Page" : `${displayUsername}'s Profile`}</h1>
+
+        {notFound ? (
+          <p style={{ textAlign: 'center', color: '#aaa' }}>User not found.</p>
+        ) : (
         <div className="user-grid">
-            <div className="profile-pic"> 
+            <div className="profile-pic">
                 <img src={profilePicSources[pfp_index]} alt="Profile"></img>
             </div>
-            <button onClick={handleCyclePfp} className="cycle_pfp_btn">
-              Next Profile Picture
-            </button>
+            {isSelf && (
+              <button onClick={handleCyclePfp} className="cycle_pfp_btn">
+                Next Profile Picture
+              </button>
+            )}
 
-            <div className="username">{authUser?.username ?? "Unknown user"}</div>
+            <div className="username">{displayUsername}</div>
 
             <div className="bio">
               <div style={{ color: 'var(--medium-purple)' }}>Bio</div>
-              <div className="bio-text" ref={bioRef} contentEditable suppressContentEditableWarning={true} onFocus={(e) => {
-                if (e.currentTarget.innerText === "Click here to edit your bio") { e.currentTarget.innerText = "";}}}
-                onBlur={(e) => { if (e.currentTarget.innerText.trim() === "") {e.currentTarget.innerText = "Click here to edit your bio";} handleSaveBio(e); }}>
-                Click here to edit your bio
-              </div>
+              {isSelf ? (
+                <div className="bio-text" ref={bioRef} contentEditable suppressContentEditableWarning={true} onFocus={(e) => {
+                  if (e.currentTarget.innerText === "Click here to edit your bio") { e.currentTarget.innerText = "";}}}
+                  onBlur={(e) => { if (e.currentTarget.innerText.trim() === "") {e.currentTarget.innerText = "Click here to edit your bio";} handleSaveBio(e); }}>
+                  Click here to edit your bio
+                </div>
+              ) : (
+                <div className="bio-text">{bio || <span style={{ color: '#aaa' }}>No bio yet.</span>}</div>
+              )}
             </div>
 
             <div className="bookmarks">
@@ -126,6 +156,7 @@ function User({ authUser, onLogout, setAuthUser }) {
             </div>
 
         </div>
+        )}
 
     </div>
   );
