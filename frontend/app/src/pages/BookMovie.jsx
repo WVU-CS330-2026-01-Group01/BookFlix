@@ -33,9 +33,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   useEffect(() => {
     if (!pair?.id) return;
 
-    const scoreUrl = `${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score` +
-      (authUser?.username ? `?userId=${encodeURIComponent(authUser.username)}` : "");
-    fetch(scoreUrl)
+    const scoreUrl = `${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score`;
+    fetch(scoreUrl, { credentials: "include" })
       .then(r => r.json())
       .then(data => {
         setScore(data.score);
@@ -70,10 +69,10 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   try {
     const response = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/vote`, {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         vote: vote === userVote ? 0 : vote,
-        userId: authUser?.username
       }),
     });
 
@@ -100,9 +99,9 @@ function BookMovie({ authenticated, authUser, onLogout }) {
     try {
       const res = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/rate`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: authUser?.username,
           movieRating: type === "movie" ? rating : movieRating,
           bookRating: type === "book" ? rating : bookRating,
         }),

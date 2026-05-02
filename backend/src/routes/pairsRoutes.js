@@ -1,6 +1,6 @@
 const express = require("express");
 const { getPool } = require("../config/database");
-const { authMiddleware } = require("../middleware/authMiddleware");
+const { authMiddleware, optionalAuth } = require("../middleware/authMiddleware");
 
 const TMDB_GENRES = {
   28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
@@ -119,9 +119,10 @@ function createPairsRouter(options = {}) {
     }
   });
   
-  router.post("/:pairKey/vote", async (req, res) => {
+  router.post("/:pairKey/vote", authMiddleware, async (req, res) => {
     const { pairKey } = req.params;
-    const { userId, vote } = req.body;
+    const { vote } = req.body;
+    const userId = req.user.username;
 
     try {
       if (vote === 0) {
@@ -154,9 +155,9 @@ function createPairsRouter(options = {}) {
     }
   });
 
-  router.get("/:pairKey/score", async (req, res) => {
+  router.get("/:pairKey/score", optionalAuth, async (req, res) => {
     const { pairKey } = req.params;
-    const { userId } = req.query;
+    const userId = req.user?.username ?? "";
 
     try {
       const [[{ score }]] = await database().query(
@@ -164,11 +165,9 @@ function createPairsRouter(options = {}) {
         [pairKey]
       );
 
-      
-
       const [[userRow]] = await database().query(
         `SELECT vote, book_rating, movie_rating, bookmarked FROM pair_data.pair_votes WHERE user_name = ? AND pair_id = ?`,
-        [userId ?? "", pairKey]
+        [userId, pairKey]
       );
 
       // Average ratings across all users (ignoring zeros/unrated)
@@ -194,13 +193,10 @@ function createPairsRouter(options = {}) {
     }
   });
 
-  router.post("/:pairKey/rate", async (req, res) => {
+  router.post("/:pairKey/rate", authMiddleware, async (req, res) => {
     const { pairKey } = req.params;
-    const { userId, bookRating, movieRating } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({ error: "userId is required." });
-    }
+    const { bookRating, movieRating } = req.body;
+    const userId = req.user.username;
 
     try {
       await database().query(

@@ -17,4 +17,19 @@ function authMiddleware(request, response, next) {
   }
 }
 
-module.exports = { authMiddleware };
+// Decodes the auth cookie if present; never rejects. Use on routes
+// that return public data but enrich the response when the caller
+// is logged in.
+function optionalAuth(request, response, next) {
+  const token = request.cookies?.[env.authCookieName];
+  if (token) {
+    try {
+      request.user = jwt.verify(token, env.jwtSecret);
+    } catch {
+      request.user = null;
+    }
+  }
+  return next();
+}
+
+module.exports = { authMiddleware, optionalAuth };
