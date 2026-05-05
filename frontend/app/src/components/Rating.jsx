@@ -17,8 +17,15 @@ function Rating({ value = 0, onChange }) {
     return "0%";
   };
 
+  const handleKeyDown = (e, star) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onChange?.(star);
+    }
+  };
+
   return (
-    <div className="stars">
+    <div className="stars" role="radiogroup" aria-label="Rating">
       {[1, 2, 3, 4, 5].map((star) => {
         const fill = getFill(star);
 
@@ -26,9 +33,16 @@ function Rating({ value = 0, onChange }) {
           <span
             key={star}
             className="star"
+            role="radio"
+            aria-label={`${star} star${star === 1 ? "" : "s"}`}
+            aria-checked={value >= star}
+            tabIndex={0}
             onMouseMove={(e) => setHoverRating(getStarValue(e, star))}
             onMouseLeave={() => setHoverRating(null)}
+            onFocus={() => setHoverRating(star)}
+            onBlur={() => setHoverRating(null)}
             onClick={(e) => onChange?.(getStarValue(e, star))}
+            onKeyDown={(e) => handleKeyDown(e, star)}
             style={{
               backgroundImage: `linear-gradient(to right, var(--medium-purple) ${fill}, gray ${fill})`,
               backgroundClip: "text",
