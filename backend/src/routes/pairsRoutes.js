@@ -230,7 +230,11 @@ function createPairsRouter(options = {}) {
     
     try {
       const [rows] = await database().query(
-        'SELECT id, username, body, created_at FROM pair_data.comments WHERE pair_id = ? ORDER BY created_at DESC',
+        `SELECT c.id, c.username, c.body, c.created_at, COALESCE(u.pfp_index, 0) AS pfp_index
+         FROM pair_data.comments c
+         LEFT JOIN authdb.users u ON u.username = c.username
+         WHERE c.pair_id = ?
+         ORDER BY c.created_at DESC`,
         [pairKey]
       );
       res.json({ ok: true, comments: rows });
@@ -258,6 +262,7 @@ function createPairsRouter(options = {}) {
         comment: {
           id: result.insertId,
           username: req.user.username,
+          pfp_index: req.user.pfp_index ?? 0,
           body: body.trim(),
           created_at: new Date()
         },

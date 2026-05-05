@@ -3,6 +3,7 @@ import BookFlix_logo_cropped from '../assets/BookFlix_logo_cropped_bg_removed.pn
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Rating from "../components/Rating";
+import CommentProfilePic from "../components/CommentProfilePic";
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
@@ -417,26 +418,60 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           )}
           {comments.map(comment => (
             <div key={comment.id} style={{ background: '#333', borderRadius: '8px', padding: '10px 14px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                   <button
                     type="button"
                     onClick={() => navigate(`/user/${encodeURIComponent(comment.username)}`)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      padding: 0,
-                      cursor: 'pointer',
-                      color: 'var(--medium-purple)',
-                      fontWeight: 'bold',
-                      fontSize: '13px',
-                    }}
+                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
                   >
-                    {comment.username}
+                    <CommentProfilePic pfpIndex={comment.pfp_index} username={comment.username} />
                   </button>
-                  <span style={{ color: '#aaa', fontSize: '11px', marginLeft: '10px' }}>
-                    {new Date(comment.created_at).toLocaleDateString()}
-                  </span>
+                  <div style={{ flex: 1 }}>
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/user/${encodeURIComponent(comment.username)}`)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                        color: 'var(--medium-purple)',
+                        fontWeight: 'bold',
+                        fontSize: '13px',
+                      }}
+                    >
+                      {comment.username}
+                    </button>
+                    <span style={{ color: '#aaa', fontSize: '11px', marginLeft: '10px' }}>
+                      {new Date(comment.created_at).toLocaleDateString()}
+                    </span>
+                    {editingId === comment.id ? (
+                      <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
+                        <input
+                          type="text"
+                          value={editBody}
+                          onChange={e => setEditBody(e.target.value)}
+                          onKeyDown={e => e.key === "Enter" && handleEditComment(comment.id)}
+                          style={{
+                            flex: 1, padding: '8px', borderRadius: '6px',
+                            border: '1px solid #444', background: '#111',
+                            color: 'white', fontSize: '14px'
+                          }}
+                        />
+                        <button onClick={() => handleEditComment(comment.id)}
+                          className="add-pair-button" style={{ margin: 0, fontSize: '13px', padding: '6px 12px' }}>
+                          Save
+                        </button>
+                        <button onClick={() => { setEditingId(null); setEditBody(""); }}
+                          style={{ background: 'none', border: '1px solid #666', color: '#aaa', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '13px' }}>
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <p style={{ color: 'white', fontSize: '14px', margin: '6px 0 0' }}>{comment.body}</p>
+                    )}
+                  </div>
                 </div>
                 {authUser?.username === comment.username && editingId !== comment.id && (
                   <div style={{ display: 'flex', gap: '6px' }}>
@@ -462,31 +497,6 @@ function BookMovie({ authenticated, authUser, onLogout }) {
                   </div>
                 )}
               </div>
-              {editingId === comment.id ? (
-                <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
-                  <input
-                    type="text"
-                    value={editBody}
-                    onChange={e => setEditBody(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && handleEditComment(comment.id)}
-                    style={{
-                      flex: 1, padding: '8px', borderRadius: '6px',
-                      border: '1px solid #444', background: '#111',
-                      color: 'white', fontSize: '14px'
-                    }}
-                  />
-                  <button onClick={() => handleEditComment(comment.id)}
-                    className="add-pair-button" style={{ margin: 0, fontSize: '13px', padding: '6px 12px' }}>
-                    Save
-                  </button>
-                  <button onClick={() => { setEditingId(null); setEditBody(""); }}
-                    style={{ background: 'none', border: '1px solid #666', color: '#aaa', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '13px' }}>
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <p style={{ color: 'white', fontSize: '14px', margin: '6px 0 0' }}>{comment.body}</p>
-              )}
             </div>
           ))}
         </div>
