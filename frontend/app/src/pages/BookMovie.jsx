@@ -31,6 +31,10 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const [isBookmarking, setIsBookmarking] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pair?.id]);
+
+  useEffect(() => {
     if (!pair?.id) return;
 
     const scoreUrl = `${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score` +
