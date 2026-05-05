@@ -15,67 +15,67 @@ const TMDB_GENRES = {
 const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
 const profilePicSources = Object.values(pics).map(pic => pic.default);
 
+// Debounced search hook shared by movie and book inputs.
+// buildUrl(query) -> string ; pickResults(json) -> array
+function useMediaSearch(query, buildUrl, pickResults, label) {
+  const [results, setResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (!query.trim()) { setResults([]); return; }
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const res = await fetch(buildUrl(query));
+        const data = await res.json();
+        if (!cancelled) setResults((pickResults(data) ?? []).slice(0, 6));
+      } catch (err) {
+        console.error(`${label} search failed:`, err);
+      } finally {
+        if (!cancelled) setIsSearching(false);
+      }
+    }, 400);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [query]);
+
+  return { results, isSearching, setResults };
+}
+
 function Pair({ authUser, onLogout }) {
   const navigate = useNavigate();
 
   const [movieQuery, setMovieQuery] = useState("");
-  const [movieResults, setMovieResults] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [isSearchingMovie, setIsSearchingMovie] = useState(false);
 
   const [bookQuery, setBookQuery] = useState("");
-  const [bookResults, setBookResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
-  const [isSearchingBook, setIsSearchingBook] = useState(false);
+
   const [saveError, setSaveError] = useState("");
   const [movieContainerHeight, setMovieContainerHeight] = useState("400px");
   const [bookContainerHeight, setBookContainerHeight] = useState("400px");
 
-  // Movie search
-  useEffect(() => {
-    if (!movieQuery.trim()) { setMovieResults([]); return; }
-    const timer = setTimeout(async () => {
-      setIsSearchingMovie(true);
-      try {
-        const res = await fetch(
-          `${baseUrl}/api/tmdb/search?type=multi&query=${encodeURIComponent(movieQuery)}&language=en-US`
-        );
-        const data = await res.json();
-        setMovieResults(data.results?.slice(0, 6) ?? []);
-      } catch (err) {
-        console.error("Movie search failed:", err);
-      } finally {
-        setIsSearchingMovie(false);
-      }
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [movieQuery]);
+  const {
+    results: movieResults,
+    isSearching: isSearchingMovie,
+    setResults: setMovieResults,
+  } = useMediaSearch(
+    movieQuery,
+    (q) => `${baseUrl}/api/tmdb/search?type=multi&query=${encodeURIComponent(q)}&language=en-US`,
+    (data) => data.results,
+    "Movie",
+  );
 
-  // Book search
-  useEffect(() => {
-    if (!bookQuery.trim()) { setBookResults([]); return; }
-    const timer = setTimeout(async () => {
-      setIsSearchingBook(true);
-      try {
-
-        //isbn?
-        const ISBNClean = bookQuery.replace(/-/g, "");
-        const isISBN = /^\d{10}$|^\d{13}$/.test(ISBNClean);
-        const query = isISBN ? `isbn:${ISBNClean}` : bookQuery;
-
-        const res = await fetch(
-          `${baseUrl}/api/google-books/search?query=${encodeURIComponent(bookQuery)}&langRestrict=en&maxResults=6`
-        );
-        const data = await res.json();
-        setBookResults(data.items?.slice(0, 6) ?? []);
-      } catch (err) {
-        console.error("Book search failed:", err);
-      } finally {
-        setIsSearchingBook(false);
-      }
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [bookQuery]);
+  const {
+    results: bookResults,
+    isSearching: isSearchingBook,
+    setResults: setBookResults,
+  } = useMediaSearch(
+    bookQuery,
+    (q) => `${baseUrl}/api/google-books/search?query=${encodeURIComponent(q)}&langRestrict=en&maxResults=6`,
+    (data) => data.items,
+    "Book",
+  );
 
   const handleSelectMovie = (movie) => {
     const genres = (movie.genre_ids ?? []).map(id => TMDB_GENRES[id]).filter(Boolean);
@@ -300,7 +300,7 @@ useEffect(() => {
             className="pair-input"
             style={{margin: '30px'}}
             type="text"
-            placeholder="Search for a title or ISBN"
+            placeholder="Search for a title"
             value={bookQuery}
             onChange={(e) => { setBookQuery(e.target.value); setSelectedBook(null); }}
             onPaste={(e) => {
