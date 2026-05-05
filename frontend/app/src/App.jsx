@@ -117,6 +117,14 @@ function App() {
           }
         />
         <Route
+          path="/user/:username"
+          element={
+            <ProtectedRoute authenticated={authenticated} checkingAuth={checkingAuth}>
+              <User authUser={authUser} onLogout={handleLogout} setAuthUser={setAuthUser} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/BookMovie"
           element={
             <BookMovie

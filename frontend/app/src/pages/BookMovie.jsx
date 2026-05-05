@@ -419,9 +419,21 @@ function BookMovie({ authenticated, authUser, onLogout }) {
             <div key={comment.id} style={{ background: '#333', borderRadius: '8px', padding: '10px 14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <span style={{ color: 'var(--medium-purple)', fontWeight: 'bold', fontSize: '13px' }}>
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/user/${encodeURIComponent(comment.username)}`)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      cursor: 'pointer',
+                      color: 'var(--medium-purple)',
+                      fontWeight: 'bold',
+                      fontSize: '13px',
+                    }}
+                  >
                     {comment.username}
-                  </span>
+                  </button>
                   <span style={{ color: '#aaa', fontSize: '11px', marginLeft: '10px' }}>
                     {new Date(comment.created_at).toLocaleDateString()}
                   </span>
