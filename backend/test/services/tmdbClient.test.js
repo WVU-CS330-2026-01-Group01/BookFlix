@@ -9,6 +9,8 @@ const {
 const { createFetchStub, jsonResponse, textResponse } = require("../../test-helpers/http");
 
 function buildExpectedUrl(baseUrl, endpoint, params = {}) {
+  // Mirror the client alias rules so URL assertions compare against TMDB's final
+  // query-string contract rather than raw test input.
   const aliasMap = {
     appendToResponse: "append_to_response",
     includeImageLanguage: "include_image_language",
@@ -168,6 +170,8 @@ test("buildImageUrl returns null for empty input and normalises leading slashes"
 });
 
 test("every exported TMDB client method hits the expected endpoint", async (t) => {
+  // The public wrapper is intentionally broad; table-driven cases keep endpoint
+  // coverage readable without hiding the expected path for each method.
   const cases = [
     {
       name: "validateKey",
@@ -351,6 +355,7 @@ test("TMDB client validates method inputs before fetching", async (t) => {
     fetchImpl,
   });
 
+  // Validation errors should stop before the fetch stub records any call.
   const cases = [
     {
       name: "getTrending rejects an invalid mediaType",

@@ -3,6 +3,8 @@ const express = require("express");
 const { createTmdbClient } = require("../services/tmdbClient");
 
 function copyQueryWithout(query, ignoredKeys = []) {
+  // Each route consumes its control parameters and forwards remaining filters
+  // straight to TMDB through the client wrapper.
   const ignored = new Set(ignoredKeys);
   const params = {};
 
@@ -16,6 +18,7 @@ function copyQueryWithout(query, ignoredKeys = []) {
 }
 
 function sendRouteError(response, error) {
+  // Preserve TMDB's status code/message alongside the app-level error string.
   const statusCode = error.status ?? 500;
 
   response.status(statusCode).json({
@@ -28,6 +31,7 @@ function sendRouteError(response, error) {
 
 function createTmdbRouter(options = {}) {
   const router = express.Router();
+  // Tests inject a fake client; production uses the token-backed TMDB wrapper.
   const tmdb = options.tmdb ?? createTmdbClient();
 
   router.get("/", (request, response) => {

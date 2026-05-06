@@ -15,6 +15,8 @@ function Login({ setAuthenticated, setAuthUser }) {
     setErrorMessage("");
 
     try {
+      // Successful login sets the HTTP-only session cookie and returns the
+      // profile fields needed by the navbar immediately.
       const response = await fetch(`${baseUrl}/auth/login`, {
         method: "POST",
         credentials: "include",

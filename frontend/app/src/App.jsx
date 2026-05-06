@@ -9,6 +9,8 @@ import BookMovie from "./pages/BookMovie";
 
 const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
+// Protected pages wait for the startup session check before deciding whether to
+// show the requested page or send the user home.
 function ProtectedRoute({ authenticated, checkingAuth, children }) {
   useEffect(() => {
     if (!checkingAuth && !authenticated) {
@@ -33,6 +35,8 @@ function App() {
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
+    // The backend owns session truth through the auth cookie; React only keeps a
+    // cached copy of the current user for rendering and route guards.
     async function verifyAuth() {
       try {
         const response = await fetch(`${baseUrl}/auth/test`, {
@@ -61,6 +65,8 @@ function App() {
   }, []);
 
   const handleLogout = async () => {
+    // Clear local auth state even if the network call fails so the UI does not
+    // leave a stale signed-in shell on screen.
     try {
       await fetch(`${baseUrl}/auth/logout`, {
         method: "POST",

@@ -17,7 +17,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const [score, setScore] = useState(pair?.score ?? 0);
   const [isVoting, setIsVoting] = useState(false);
   const [voteError, setVoteError] = useState("");
-  const [userVote, setUserVote] = useState(null); // null, 1 (upvote), or -1 (downvote)
+  const [userVote, setUserVote] = useState(null);
   const [movieRating, setMovieRating] = useState(0);
   const [bookRating, setBookRating] = useState(0);
   const [comments, setComments] = useState([]);
@@ -38,6 +38,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   useEffect(() => {
     if (!pair?.id) return;
 
+    // The score endpoint returns public aggregates plus the caller's personal
+    // vote, ratings, and bookmark state when an auth cookie is present.
     const scoreUrl = `${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/score`;
     fetch(scoreUrl, { credentials: "include" })
       .then(r => r.json())
@@ -65,6 +67,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
 
   const vote = direction === "up" ? 1 : -1;
 
+  // Clicking an already selected vote clears it; failed requests roll back to
+  // the last confirmed score and selection.
   const previousScore = score;
   const previousUserVote = userVote;
 
@@ -85,7 +89,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
     if (!response.ok) throw new Error(data.error ?? "Failed to update vote.");
 
     setScore(data.score);
-    setUserVote(data.userVote); // 👈 this is what controls the fill
+    setUserVote(data.userVote);
   } catch (error) {
     setScore(previousScore);
     setUserVote(previousUserVote);
@@ -98,6 +102,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const handleRate = async (type, rating) => {
     if (!authenticated) { alert("You must be logged in to rate."); return; }
 
+    // Update the selected rating immediately, then replace the displayed
+    // averages with the backend's recalculated values.
     if (type === "movie") setMovieRating(rating);
     else setBookRating(rating);
 
@@ -122,6 +128,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   useEffect(() => {
     if (!pair?.id) return;
 
+    // Comments are public, but edit/delete controls only render for the author.
     fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/comments`)
       .then(r => r.json())
       .then(data => setComments(data.comments))
@@ -140,6 +147,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
     }
 
     try {
+      // The API returns the inserted comment with id and profile image index so
+      // the list can update without another fetch.
       const response = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/comments`, {
         method: "POST",
         credentials: "include",
@@ -160,6 +169,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   const handleEditComment = async (commentId) => {
     if (!editBody.trim()) return;
     try {
+      // Ownership is enforced server-side; the optimistic local update only runs
+      // after the edit request succeeds.
       const res = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/comments/${commentId}`, {
         method: "PUT",
         credentials: "include",
@@ -195,6 +206,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
     }
     setIsBookmarking(true);
     try {
+      // Bookmark state is stored with the user's pair_votes row, so this call can
+      // coexist with votes and ratings for the same pair.
       const method = bookmarked ? "DELETE" : "POST";
       const res = await fetch(`${baseUrl}/api/pairs/${encodeURIComponent(pair.id)}/bookmark`, {
         method,
@@ -213,13 +226,8 @@ function BookMovie({ authenticated, authUser, onLogout }) {
   
 
   return (
-
-
-
     <div className="page">
-
-
-      {/* Navbar */}
+      {/* Navigation */}
       <div className="navbar">
         <button className="logo" onClick={() => navigate("/")}>
           <img src={BookFlix_logo_cropped} alt="BookFlix Logo"
@@ -277,8 +285,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
         </button>
       </div>
 
-
-      {/* Main content wrapper */}
+      {/* Pair detail */}
       <div style={{ color: 'white', padding: '30px' }}>
 
 
@@ -289,7 +296,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           gap: '24px',
         }}>
 
-          {/* Movie side */}
+          {/* Movie detail */}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -327,7 +334,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
             </div>
           </div>
 
-          {/* Divider */}
+          {/* Visual divider between the two source works */}
           <div style={{
             width: '2px',
             background: 'rgba(255,255,255,0.2)',
@@ -335,7 +342,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
             borderRadius: '2px',
           }} />
 
-          {/* Book side */}
+          {/* Book detail */}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -380,12 +387,11 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           </span>
         </div>
 
-
-      {/*comments section*/}
+      {/* Discussion */}
       <div className="bio" style={{ width: '80%', margin: '20px auto', padding: '20px', background: '#222', borderRadius: '10px' }}>
         <div style={{ color: 'var(--medium-purple)', marginBottom: '15px', fontWeight: 'bold' }}>Comments</div>
 
-        {/* new comment input */}
+        {/* New comment composer */}
         {commentError && <p style={{ color: '#ffb6c1', fontSize: '13px' }}>{commentError}</p>}
         <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
           <input
@@ -411,7 +417,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
           </button>
         </div>
 
-        {/* existing comments */}
+        {/* Comment list */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
           {comments.length === 0 && (
             <p style={{ color: '#aaa', fontSize: '14px' }}>No comments yet. Be the first!</p>
@@ -502,7 +508,7 @@ function BookMovie({ authenticated, authUser, onLogout }) {
         </div>
       </div>
 
-      {/*pair vote*/}
+      {/* Pair vote controls */}
       <div className="pair-score-panel">
         <div className="pair-score-label"> Is this Pair Correct?
           <div className="pair-vote-actions">

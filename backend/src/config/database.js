@@ -7,6 +7,8 @@ const env = require("./env");
 let pool;
 
 function assertDatabaseConfig() {
+  // The database name has a development default, but connection identity should
+  // always come from the environment rather than being guessed in code.
   const missing = [
     ["DB_HOST", env.dbHost],
     ["DB_USER", env.dbUser],
@@ -22,6 +24,8 @@ function assertDatabaseConfig() {
 }
 
 function getSslConfig() {
+  // Read the CA lazily so test runs that never touch MySQL do not need local
+  // certificate setup.
   if (!fs.existsSync(env.dbSslCaPath)) {
     throw new Error(`MySQL CA certificate was not found at ${env.dbSslCaPath}`);
   }
@@ -49,6 +53,8 @@ function createConnectionConfig(database = env.dbName) {
 }
 
 function getPool() {
+  // A single process-wide pool is enough for the small Express API and keeps
+  // connection reuse consistent across routers.
   if (!pool) {
     pool = mysql.createPool(createConnectionConfig());
   }
@@ -57,6 +63,8 @@ function getPool() {
 }
 
 async function getDatabaseStatus() {
+  // Health checks verify both connectivity and the auth schema the app expects
+  // before the server accepts normal traffic.
   const databasePool = getPool();
   const [databaseRows] = await databasePool.query("SELECT DATABASE() AS databaseName");
   const [versionRows] = await databasePool.query("SELECT VERSION() AS serverVersion");
@@ -81,6 +89,7 @@ async function getDatabaseStatus() {
 }
 
 async function closePool() {
+  // Tests and graceful shutdown both use this to release sockets cleanly.
   if (!pool) {
     return;
   }

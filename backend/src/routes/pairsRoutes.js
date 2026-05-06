@@ -2,6 +2,8 @@ const express = require("express");
 const { getPool } = require("../config/database");
 const { authMiddleware, optionalAuth } = require("../middleware/authMiddleware");
 
+// Store readable genre names with saved pairs so the home feed can search and
+// render cards without making a second TMDB call for every result.
 const TMDB_GENRES = {
   28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
   80: "Crime", 99: "Documentary", 18: "Drama", 10751: "Family",
@@ -27,6 +29,8 @@ function createPairsRouter(options = {}) {
       const key = `${movie.id}_${book.id}`;
       const genres = (movie.genre_ids ?? []).map(id => TMDB_GENRES[id]).filter(Boolean);
 
+      // Pair rows are snapshots of the selected TMDB and Google Books records.
+      // Updating an existing key refreshes display text without resetting votes.
       await database().execute(
         `INSERT INTO pair_data.movie_book_pairs (
           id, user, score,
@@ -70,6 +74,8 @@ function createPairsRouter(options = {}) {
 
   router.get("/all", async (request, response) => {
     try {
+      // The feed needs aggregate vote, rating, and comment data alongside each
+      // pair so the frontend can rank cards without extra per-card requests.
       const [rows] = await database().execute(`
         SELECT p.*,
           COALESCE((SELECT SUM(vote) FROM pair_data.pair_votes WHERE pair_id = p.id), 0) AS score,
@@ -79,7 +85,8 @@ function createPairsRouter(options = {}) {
         FROM pair_data.movie_book_pairs p
       `);
 
-      // Reshape rows back into object format frontend expects
+      // Reshape SQL columns back into the nested pair object used across React
+      // navigation state and detail views.
       const pairs = {};
       for (const row of rows) {
         pairs[row.id] = {
@@ -125,6 +132,8 @@ function createPairsRouter(options = {}) {
     const userId = req.user.username;
 
     try {
+      // A repeat click sends vote=0, which removes the user's vote row instead
+      // of storing a neutral vote that would still count as activity.
       if (vote === 0) {
         await database().query(
           `DELETE FROM pair_data.pair_votes WHERE user_name = ? AND pair_id = ?`,
@@ -138,6 +147,8 @@ function createPairsRouter(options = {}) {
         );
       }
 
+      // Return both the new aggregate score and the caller's selected vote so
+      // the detail page can update immediately after a button click.
       const [[{ score }]] = await database().query(
         `SELECT COALESCE(SUM(vote), 0) AS score FROM pair_data.pair_votes WHERE pair_id = ?`,
         [pairKey]
@@ -160,6 +171,8 @@ function createPairsRouter(options = {}) {
     const userId = req.user?.username ?? "";
 
     try {
+      // Anonymous users can see public aggregates; logged-in users also receive
+      // their own vote, ratings, and bookmark state for this pair.
       const [[{ score }]] = await database().query(
         `SELECT COALESCE(SUM(vote), 0) AS score FROM pair_data.pair_votes WHERE pair_id = ?`,
         [pairKey]
@@ -170,7 +183,7 @@ function createPairsRouter(options = {}) {
         [userId, pairKey]
       );
 
-      // Average ratings across all users (ignoring zeros/unrated)
+      // Zero means "not rated" in pair_votes, so averages ignore those values.
       const [[avgRow]] = await database().query(
         `SELECT AVG(NULLIF(book_rating, 0)) AS avgBook, AVG(NULLIF(movie_rating, 0)) AS avgMovie
          FROM pair_data.pair_votes WHERE pair_id = ?`,
@@ -199,6 +212,8 @@ function createPairsRouter(options = {}) {
     const userId = req.user.username;
 
     try {
+      // Ratings share the pair_votes row with votes and bookmarks so all
+      // caller-specific pair state stays keyed by user_name + pair_id.
       await database().query(
         `INSERT INTO pair_data.pair_votes (user_name, pair_id, vote, book_rating, movie_rating)
          VALUES (?, ?, 0, ?, ?)
@@ -223,8 +238,8 @@ function createPairsRouter(options = {}) {
     }
   });
 
-  // comments: get, post, edit, delete
-
+  // Comments are public to read, but creation and ownership changes require the
+  // same cookie session used by votes and profile edits.
   router.get("/:pairKey/comments", async (req, res) => {
     const { pairKey } = req.params;
     
@@ -253,6 +268,8 @@ function createPairsRouter(options = {}) {
     }
     
     try {
+      // Return the inserted comment in UI-ready shape so the frontend can prepend
+      // it without refetching the full thread.
       const [result] = await database().query(
         'INSERT INTO pair_data.comments (pair_id, username, body) VALUES (?, ?, ?)',
         [pairKey, req.user.username, body.trim()]
@@ -273,7 +290,8 @@ function createPairsRouter(options = {}) {
     }
   });
 
-  // edit and delete enforce ownership: only the comment author can modify
+  // Editing enforces ownership in SQL so clients cannot modify another user's
+  // comment by guessing its id.
   router.put("/:pairKey/comments/:commentId", authMiddleware, async (req, res) => {
     const { commentId } = req.params;
     const { body } = req.body;
@@ -301,6 +319,8 @@ function createPairsRouter(options = {}) {
     const { commentId } = req.params;
 
     try {
+      // Deleting uses the same author check as editing for a consistent
+      // authorization rule across comment mutations.
       const [result] = await database().query(
         'DELETE FROM pair_data.comments WHERE id = ? AND username = ?',
         [commentId, req.user.username]
@@ -319,6 +339,8 @@ function createPairsRouter(options = {}) {
     const { pairKey } = req.params;
 
     try {
+      // Bookmarking creates the pair_votes row when the user has not voted or
+      // rated yet, preserving one state record per user/pair.
       const [result] = await database().query(
         `INSERT INTO pair_data.pair_votes (user_name, pair_id, vote, bookmarked) 
         VALUES (?, ?, 0, 1)
@@ -336,6 +358,7 @@ function createPairsRouter(options = {}) {
     const { pairKey } = req.params;
 
     try {
+      // Keep the row for existing votes/ratings and only clear the bookmark bit.
       const [result] = await database().query(
         `UPDATE pair_data.pair_votes SET bookmarked = 0 WHERE user_name = ? AND pair_id = ?`,
         [req.user.username, pairKey]

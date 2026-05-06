@@ -4,12 +4,15 @@ function Rating({ value = 0, onChange }) {
   const [hoverRating, setHoverRating] = useState(null);
 
   const getStarValue = (e, starIndex) => {
+    // Pointer position determines half-star ratings without needing separate
+    // left/right hit targets in the markup.
     const rect = e.currentTarget.getBoundingClientRect();
     const isHalf = e.clientX - rect.left < rect.width / 2;
     return isHalf ? starIndex - 0.5 : starIndex;
   };
 
   const getFill = (star) => {
+    // Hover previews temporarily override the saved value for visual feedback.
     const activeRating = hoverRating ?? value;
 
     if (activeRating >= star) return "100%";

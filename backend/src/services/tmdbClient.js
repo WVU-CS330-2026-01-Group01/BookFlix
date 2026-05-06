@@ -65,6 +65,8 @@ const PARAM_ALIASES = Object.freeze({
   externalSource: "external_source",
 });
 
+// Route handlers preserve these details in JSON error responses without
+// leaking fetch internals to the React app.
 class TmdbInputError extends Error {
   constructor(message) {
     super(message);
@@ -99,6 +101,8 @@ function requireOneOf(options, value, label) {
 }
 
 function toQueryString(params = {}) {
+  // The frontend uses camelCase names in a few places; translate them once here
+  // before calling TMDB's snake_case API.
   const searchParams = new URLSearchParams();
 
   for (const [key, value] of Object.entries(params)) {
@@ -132,8 +136,8 @@ function createTmdbClient(options = {}) {
     );
   }
 
-  // This service only knows how to talk to TMDB.
-  // Route handlers and frontend concerns live elsewhere.
+  // This service only knows how to talk to TMDB. Route handlers and frontend
+  // response shaping live elsewhere.
   async function request(endpoint, params = {}) {
     const baseUrl = `${apiBaseUrl.replace(/\/+$/, "")}/`;
     const url = new URL(endpoint.replace(/^\/+/, ""), baseUrl);
@@ -186,6 +190,8 @@ function createTmdbClient(options = {}) {
   }
 
   function buildImageUrl(filePath, size = "original") {
+    // TMDB returns image paths separately from host/size information, so the UI
+    // can ask the backend for a fully qualified poster URL when needed.
     if (!filePath) {
       return null;
     }

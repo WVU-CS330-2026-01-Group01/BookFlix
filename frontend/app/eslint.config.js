@@ -4,6 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
+// Match Vite's browser-focused React setup while keeping generated build output out of lint.
 export default defineConfig([
   globalIgnores(['dist']),
   {

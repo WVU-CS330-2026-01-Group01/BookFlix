@@ -15,8 +15,8 @@ const TMDB_GENRES = {
 const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
 const profilePicSources = Object.values(pics).map(pic => pic.default);
 
-// Debounced search hook shared by movie and book inputs.
-// buildUrl(query) -> string ; pickResults(json) -> array
+// Shared debounced search keeps the movie and book inputs consistent while each
+// side still controls its own API URL and response shape.
 function useMediaSearch(query, buildUrl, pickResults, label) {
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -78,15 +78,19 @@ function Pair({ authUser, onLogout }) {
   );
 
   const handleSelectMovie = (movie) => {
+    // Save a display-ready movie object; the backend will snapshot the fields it
+    // needs for the feed and detail page.
     const genres = (movie.genre_ids ?? []).map(id => TMDB_GENRES[id]).filter(Boolean);
-    setSelectedMovie({ ...movie, genres }); // attach genres to the movie object
+    setSelectedMovie({ ...movie, genres });
     setMovieQuery(movie.title ?? movie.name);
     setMovieResults([]);
 };
 
   const handleSelectBook = (book) => {
+    // Google Books keeps metadata under volumeInfo, so preserve the original
+    // record and add normalized genres for local preview/search parity.
     const genres = book.volumeInfo?.categories ?? [];
-    setSelectedBook({ ...book, genres }); // attach genres to the book object
+    setSelectedBook({ ...book, genres });
     setBookQuery(book.volumeInfo?.title ?? "");
     setBookResults([]);
   };
@@ -95,6 +99,8 @@ function Pair({ authUser, onLogout }) {
     setSaveError("");
 
     try {
+      // Persist the chosen external records as one BookFlix pair owned by the
+      // signed-in user.
       const res = await fetch(`${baseUrl}/api/pairs/save`, {
         method: "POST",
         credentials: "include",
@@ -123,10 +129,13 @@ function Pair({ authUser, onLogout }) {
 
 
 useEffect(() => {
+  // Selected previews are taller than the empty drop zones, keeping the poster
+  // and cover from crowding the search input.
   setMovieContainerHeight(selectedMovie ? "450px" : "400px");
 }, [selectedMovie]);
 
 useEffect(() => {
+  // Mirror the movie panel sizing so both halves of the pair stay balanced.
   setBookContainerHeight(selectedBook ? "450px" : "400px");
 }, [selectedBook]);
 
@@ -151,17 +160,6 @@ useEffect(() => {
               </button>
         </div>
       </div>
-
-
-
-
-
-
-
-
-
-      {/* MEAT */}
-
       <div>
         <h1 style={{
           textAlign: 'center', 
@@ -176,9 +174,7 @@ useEffect(() => {
       <div className="pairContainer">
 
 
-
-
-        {/* Movie search box */}
+        {/* Movie search panel */}
         <div className="pairBox" 
           style={{ 
             position: 'relative', 
@@ -285,11 +281,7 @@ useEffect(() => {
           }}>
             +
         </h3>
-
-
-
-
-        {/* Book search box */}
+        {/* Book search panel */}
         <div className="pairBox" style={{ 
           position: 'relative', 
           overflow: 'visible',
@@ -393,7 +385,7 @@ useEffect(() => {
 
       </div>
 
-      {/*make new movie book pair button*/}
+      {/* Pair submission */}
       {selectedBook && selectedMovie && (
         <button 
         className ="add-pair-button" 

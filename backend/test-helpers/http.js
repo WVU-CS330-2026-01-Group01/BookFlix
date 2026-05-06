@@ -21,6 +21,8 @@ function textResponse(status, body) {
 }
 
 function createFetchStub(responseFactory) {
+  // Service tests use this in place of network calls while still recording the
+  // exact URL and headers the client would have sent.
   const calls = [];
 
   const fetchImpl = async (url, init = {}) => {
@@ -40,6 +42,8 @@ function createFetchStub(responseFactory) {
 }
 
 function createAppWithRouter(basePath, router) {
+  // Route tests mount one router at a time so assertions stay focused on that
+  // public API surface.
   const app = express();
   app.use(express.json());
   app.use(basePath, router);
@@ -47,6 +51,8 @@ function createAppWithRouter(basePath, router) {
 }
 
 async function withServer(app, callback) {
+  // Node's fetch works against a real local HTTP server, which gives route tests
+  // realistic request parsing without binding to a fixed port.
   const server = http.createServer(app);
 
   await new Promise((resolve, reject) => {

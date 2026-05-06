@@ -7,16 +7,17 @@ const baseUrl = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 const pics = import.meta.glob('../assets/profile_pics/*.png', { eager: true });
 const profilePicSources = Object.values(pics).map(pic => pic.default);
 
+// Home ranking favors well-rated, active pairs while pushing down pairs the
+// community has explicitly rejected.
 function rankPairs(pair) {
   const score = Number(pair.score ?? 0);
   const movieRating = Number(pair.avg_movie_rating ?? 0);
   const bookRating = Number(pair.avg_book_rating ?? 0);
   const commentCount = Number(pair.comment_count ?? 0);
 
-  // formula for ranking pairs - change weights later maybe?
   let result = 0;
   if (score < 0){
-    result -= Math.abs(score) * 10; // downvotes should decrease rank more than upvotes increase it
+    result -= Math.abs(score) * 10;
   } 
   result +=movieRating + bookRating + commentCount * 0.5;
 
@@ -34,13 +35,16 @@ function Home({ authenticated, authUser, onLogout }) {
   const [visibleCount, setVisibleCount] = useState(40);
 
   useEffect(() => {
+    // The feed endpoint already includes score, rating, and comment aggregates
+    // so cards can be searched and ranked client-side.
     fetch(`${baseUrl}/api/pairs/all`)
       .then(r => r.json())
       .then(data => setPairs(data))
       .catch(err => console.error('Error fetching pairs:', err));
   }, []);
 
-    const filteredPairs = Object.entries(pairs).filter(([key, pair]) => {
+  // Search spans title and saved genre/category metadata from both sides of the pair.
+  const filteredPairs = Object.entries(pairs).filter(([key, pair]) => {
     const query = searchQuery.toLowerCase();
     const movieGenres = (pair.movie.genre ?? []).join(' ').toLowerCase();
     const bookGenres = (pair.book.categories ?? []).join(' ').toLowerCase();
@@ -51,7 +55,7 @@ function Home({ authenticated, authUser, onLogout }) {
       bookGenres.includes(query)         
     );
   })
-  .sort(([, a], [, b]) => rankPairs(b) - rankPairs(a)); // sort pairs by rank
+  .sort(([, a], [, b]) => rankPairs(b) - rankPairs(a));
   
 
   return (
@@ -147,7 +151,6 @@ function Home({ authenticated, authUser, onLogout }) {
                   />
                   <div className="card-info">
                     <p style={{ color: 'white', fontSize: '13px', margin: '2px 0', opacity: '1' }}>{pair.movie.title}</p>
-                    {/* <p style={{ color: '#d3c7e6', fontSize: '12px', margin: '6px 0 0' }}>Score: {pair.score ?? 0}</p> */}
                   </div>
                   <img
                     src={pair.book.thumbnail}

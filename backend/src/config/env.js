@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 
 const envPath = path.resolve(__dirname, "../../.env");
 
+// Backend configuration is rooted at backend/.env regardless of the directory
+// used to launch npm scripts.
 dotenv.config({ path: envPath });
 
 const defaultDbSslCaPath = path.resolve(__dirname, "../../config/DigiCertGlobalRootG2.crt.pem");
@@ -22,6 +24,8 @@ module.exports = {
   dbPassword: process.env.DB_PASSWORD || "",
   dbName: process.env.DB_NAME || "authdb",
   dbPort: Number(process.env.DB_PORT) || 3306,
+  // Azure MySQL requires a CA bundle; relative override paths stay scoped to
+  // backend/.env so local and hosted deployments resolve the same way.
   dbSslCaPath: process.env.DB_SSL_CA_PATH
     ? path.resolve(path.dirname(envPath), process.env.DB_SSL_CA_PATH)
     : defaultDbSslCaPath,

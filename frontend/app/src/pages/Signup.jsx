@@ -23,6 +23,8 @@ function Signup() {
     }
 
     try {
+      // Registration creates the account only; the login page still establishes
+      // the session cookie so auth flow stays explicit.
       const response = await fetch(`${baseUrl}/auth/register`, {
         method: "POST",
         credentials: "include",

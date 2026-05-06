@@ -11,6 +11,8 @@ const GOOGLE_BOOKS_PRINT_TYPES = Object.freeze(["all", "books", "magazines"]);
 const GOOGLE_BOOKS_PROJECTIONS = Object.freeze(["full", "lite"]);
 const GOOGLE_BOOKS_DOWNLOADS = Object.freeze(["epub"]);
 
+// Route handlers use these typed errors to preserve upstream context while
+// returning normal JSON responses to the frontend.
 class GoogleBooksInputError extends Error {
   constructor(message) {
     super(message);
@@ -66,6 +68,8 @@ function requireIntegerInRange(value, minimum, maximum, label) {
 }
 
 function toQueryString(params = {}) {
+  // Google Books accepts repeated comma-separated filters for these endpoints;
+  // empty values are dropped so route callers can pass request.query directly.
   const searchParams = new URLSearchParams();
 
   for (const [key, value] of Object.entries(params)) {
@@ -81,6 +85,8 @@ function toQueryString(params = {}) {
 }
 
 function validateSearchOptions(optionsForRequest = {}) {
+  // Keep validation close to the client wrapper so backend routes do not need to
+  // duplicate Google Books enum and pagination rules.
   requireOptionalOneOf(GOOGLE_BOOKS_FILTERS, optionsForRequest.filter, "filter");
   requireOptionalOneOf(GOOGLE_BOOKS_ORDER_BY, optionsForRequest.orderBy, "orderBy");
   requireOptionalOneOf(GOOGLE_BOOKS_PRINT_TYPES, optionsForRequest.printType, "printType");
@@ -105,8 +111,8 @@ function createGoogleBooksClient(options = {}) {
     );
   }
 
-  // This service only knows how to talk to the public Google Books API.
-  // Route handlers and frontend concerns live elsewhere.
+  // This service only knows how to talk to the public Google Books API. Route
+  // handlers and frontend response shaping live elsewhere.
   async function request(endpoint, params = {}) {
     const baseUrl = `${apiBaseUrl.replace(/\/+$/, "")}/`;
     const url = new URL(endpoint.replace(/^\/+/, ""), baseUrl);

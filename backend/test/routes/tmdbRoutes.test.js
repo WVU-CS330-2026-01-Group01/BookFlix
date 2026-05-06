@@ -24,6 +24,8 @@ test("TMDB route index lists the public endpoints", async () => {
 });
 
 test("TMDB search route defaults to movie and forwards query options", async () => {
+  // Router tests inject a fake TMDB client so they can verify request mapping
+  // without depending on the external API or credentials.
   const calls = [];
   const tmdb = {
     async search(type, query, options) {

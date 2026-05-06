@@ -11,6 +11,8 @@ const profilePicSources = Object.values(pics).map(pic => pic.default);
 function User({ authUser, onLogout, setAuthUser }) {
   const navigate = useNavigate();
   const { username: paramUsername } = useParams();
+  // /user edits the signed-in profile, while /user/:username renders another
+  // member's public profile with the same layout.
   const isSelf = !paramUsername || paramUsername === authUser?.username;
   const displayUsername = isSelf ? (authUser?.username ?? "Unknown user") : paramUsername;
 
@@ -23,6 +25,8 @@ function User({ authUser, onLogout, setAuthUser }) {
 
   useEffect(() => {
     if (isSelf) {
+      // Self profile data is split across focused endpoints because only the
+      // signed-in user can edit bio, avatar, and bookmarks.
       fetch(`${baseUrl}/api/users/bio`, { credentials: "include" })
         .then(r => r.json())
         .then(data => {
@@ -36,6 +40,8 @@ function User({ authUser, onLogout, setAuthUser }) {
         .then(data => setBookmarks(data.bookmarks ?? []))
         .catch(err => console.error("Failed to load bookmarks:", err));
     } else {
+      // Public profile reads include profile fields and bookmarks in one call so
+      // visiting another user does not expose private write endpoints.
       fetch(`${baseUrl}/api/users/${encodeURIComponent(paramUsername)}/profile`, { credentials: "include" })
         .then(async r => {
           if (r.status === 404) { setNotFound(true); return null; }
@@ -53,6 +59,8 @@ function User({ authUser, onLogout, setAuthUser }) {
   }, [isSelf, paramUsername]);
 
   const handleSaveBio = async (e) => {
+    // contentEditable is used for quick inline editing; persist only meaningful
+    // changes that satisfy the database length limit.
     const newBio = e.currentTarget.innerText.trim();
     if (newBio === "Click here to edit your bio") return;
     if (newBio === bio) return;
@@ -71,6 +79,8 @@ function User({ authUser, onLogout, setAuthUser }) {
   };
 
   const handleCyclePfp = async () => {
+    // Apply the avatar change locally first so the navbar and profile page stay
+    // in sync while the backend update is in flight.
     const nextIndex = (pfp_index + 1) % profilePicSources.length;
     setAuthUser(prev => ({ ...prev, pfp_index: nextIndex }));
 
@@ -141,6 +151,7 @@ function User({ authUser, onLogout, setAuthUser }) {
             <div className="bookmarks">
               <div style={{ color: 'var(--medium-purple)', marginBottom: '10px', fontWeight: 'bold' }}>Bookmarks</div>
               {bookmarks.length === 0 && <p style={{ color: '#aaa', fontSize: '14px' }}>No bookmarks yet.</p>}
+              {/* Bookmark cards reuse pair navigation state from the home feed. */}
               {bookmarks.map(pair => (
                 <button key={pair.id} className="card"
                   onClick={() => navigate("/BookMovie", { state: { pair } })}

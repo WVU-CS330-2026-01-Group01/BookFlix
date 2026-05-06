@@ -9,6 +9,8 @@ const {
 const { createFetchStub, jsonResponse, textResponse } = require("../../test-helpers/http");
 
 function buildExpectedUrl(baseUrl, endpoint, params = {}) {
+  // Build the exact public API URL expected after filtering empty parameters and
+  // serializing array values.
   const url = new URL(endpoint.replace(/^\/+/, ""), `${baseUrl.replace(/\/+$/, "")}/`);
 
   for (const [key, value] of Object.entries(params)) {
@@ -136,6 +138,8 @@ test("request falls back to an HTTP status message when the response body is not
 });
 
 test("searchVolumes and getVolume call the expected public volume endpoints", async (t) => {
+  // Search and detail calls share the same request path builder but validate
+  // different Google Books option sets.
   const cases = [
     {
       name: "searchVolumes",
@@ -207,6 +211,7 @@ test("Google Books client validates public search and detail inputs before fetch
     fetchImpl,
   });
 
+  // Invalid input should fail locally and avoid spending API quota.
   const cases = [
     {
       name: "search requires a query",

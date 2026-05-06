@@ -3,6 +3,8 @@ const express = require("express");
 const { createGoogleBooksClient } = require("../services/googleBooksClient");
 
 function copyQueryWithout(query, ignoredKeys = []) {
+  // Search/detail routes reserve a few keys for path intent and pass the rest
+  // through to Google Books for filters such as projection and langRestrict.
   const ignored = new Set(ignoredKeys);
   const params = {};
 
@@ -16,6 +18,7 @@ function copyQueryWithout(query, ignoredKeys = []) {
 }
 
 function sendRouteError(response, error) {
+  // Service-layer errors already carry the right status and Google metadata.
   const statusCode = error.status ?? 500;
 
   response.status(statusCode).json({
@@ -27,6 +30,7 @@ function sendRouteError(response, error) {
 
 function createGoogleBooksRouter(options = {}) {
   const router = express.Router();
+  // Tests inject a fake client; production uses the real public API wrapper.
   const googleBooks = options.googleBooks ?? createGoogleBooksClient({
     apiKey: process.env.GOOGLE_BOOKS_API_KEY,
   });

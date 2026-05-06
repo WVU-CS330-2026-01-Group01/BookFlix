@@ -7,6 +7,8 @@ const { authMiddleware } = require("../middleware/authMiddleware");
 const { getPool } = require("../config/database");
 
 function getCookieOptions() {
+  // Keep auth tokens in an HTTP-only cookie so React never has to store JWTs in
+  // localStorage or manually attach Authorization headers.
   return {
     httpOnly: true,
     sameSite: env.authCookieSameSite,
@@ -26,6 +28,8 @@ function createAuthRouter() {
     }
 
     try {
+      // Usernames and email addresses are both login-critical identifiers, so
+      // registration treats either collision as a conflict.
       const [existingRows] = await getPool().execute(
         "SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1",
         [username, email],
@@ -35,6 +39,7 @@ function createAuthRouter() {
         return response.status(409).json({ error: "Username or email already exists." });
       }
 
+      // Password hashes are the only credential material stored in MySQL.
       const passwordHash = await bcrypt.hash(password, 10);
 
       await getPool().execute(
@@ -74,6 +79,8 @@ function createAuthRouter() {
         return response.status(401).json({ error: "Invalid credentials." });
       }
 
+      // The cookie lifetime and JWT expiry intentionally match so the browser
+      // does not keep an expired token around after the session window closes.
       const token = jwt.sign(
         { id: user.id, username: user.username },
         env.jwtSecret,
@@ -97,6 +104,8 @@ function createAuthRouter() {
   });
 
   router.get("/test", authMiddleware, async (request, response) => {
+    // Session verification returns the freshest profile fields, including the
+    // selected avatar index, instead of trusting the older JWT payload.
     const [rows] = await getPool().execute(
       "SELECT id, username, pfp_index FROM users WHERE id = ? LIMIT 1",
       [request.user.id],
@@ -109,6 +118,7 @@ function createAuthRouter() {
   });
 
   router.post("/logout", (request, response) => {
+    // Clearing the cookie is enough to end the stateless JWT session.
     response.clearCookie(env.authCookieName, {
       httpOnly: true,
       sameSite: env.authCookieSameSite,

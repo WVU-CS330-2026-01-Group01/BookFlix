@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const env = require("../config/env");
 
+// Required-session guard for write operations and private profile data.
 function authMiddleware(request, response, next) {
   const token = request.cookies?.[env.authCookieName];
 
@@ -17,9 +18,8 @@ function authMiddleware(request, response, next) {
   }
 }
 
-// Decodes the auth cookie if present; never rejects. Use on routes
-// that return public data but enrich the response when the caller
-// is logged in.
+// Optional-session guard for public reads that can still return caller-specific
+// state, such as a user's current vote on a pair.
 function optionalAuth(request, response, next) {
   const token = request.cookies?.[env.authCookieName];
   if (token) {

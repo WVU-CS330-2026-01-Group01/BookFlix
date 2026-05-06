@@ -17,6 +17,8 @@ test("Google Books route index lists the public endpoints", async () => {
 });
 
 test("Google Books search route forwards the query and passthrough options", async () => {
+  // The fake client keeps this focused on Express query handling rather than the
+  // Google Books service wrapper.
   const calls = [];
   const googleBooks = {
     async searchVolumes(query, options) {

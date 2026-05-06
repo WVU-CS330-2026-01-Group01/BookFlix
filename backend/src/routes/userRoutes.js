@@ -5,7 +5,8 @@ const { authMiddleware } = require("../middleware/authMiddleware");
 function createUserRouter() {
   const router = express.Router();
 
-  // get and update user bio (stored in authdb.users.bio, VARCHAR 500)
+  // Private profile endpoints always use the cookie identity rather than a
+  // username supplied by the client.
   router.get("/bio", authMiddleware, async (request, response) => {
     try {
       const [rows] = await getPool().execute(
@@ -34,6 +35,7 @@ function createUserRouter() {
 
   router.post("/pfp", authMiddleware, async (request, response) => {
     try { 
+      // Avatar choice is stored as an index into the bundled profile image list.
       await getPool().execute(
         'UPDATE authdb.users SET pfp_index = ? WHERE username = ?',
         [request.body.pfp_index, request.user.username]
@@ -47,6 +49,8 @@ function createUserRouter() {
 
   router.get("/bookmarks", authMiddleware, async (request, response) => {
     try {
+      // The profile page renders bookmarks with the same nested pair shape used
+      // by the home feed and detail page navigation state.
       const bookmarks = await fetchBookmarksFor(request.user.username);
       response.json({ ok: true, bookmarks });
     } catch (error) {
@@ -55,9 +59,8 @@ function createUserRouter() {
     }
   });
 
-  // Public profile view: anyone authenticated can fetch another user's
-  // public-facing fields. Writes still go through the cookie-only
-  // /bio and /pfp endpoints — never through this read path.
+  // Authenticated users can view another user's public fields, but writes still
+  // go through the private /bio and /pfp endpoints above.
   router.get("/:username/profile", authMiddleware, async (request, response) => {
     try {
       const { username } = request.params;
@@ -87,6 +90,8 @@ function createUserRouter() {
 }
 
 async function fetchBookmarksFor(username) {
+  // Bookmark rows live in pair_votes, while display metadata lives in the saved
+  // pair snapshot table.
   const [rows] = await getPool().execute(
     `SELECT p.*
     FROM pair_data.movie_book_pairs p
